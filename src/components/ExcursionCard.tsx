@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Excursions } from '@/payload-types'
-import { MapPin, Clock, Languages, Car, X } from 'lucide-react'
+import { Excursion } from '@/payload-types'
+import { MapPin, Clock, Languages, Car } from 'lucide-react'
 import { Modal } from '@/components/ui/Modal'
-import BookingForm from '@/components/BookingForm'
+import BookingForm from './BookingForm'
 
 interface ExcursionCardProps {
-  excursion: Excursions
+  excursion: Excursion
 }
 
 export default function ExcursionCard({ excursion }: ExcursionCardProps) {
@@ -63,7 +63,7 @@ export default function ExcursionCard({ excursion }: ExcursionCardProps) {
               <div className="flex items-center space-x-1">
                 <Languages size={16} className="text-primary" />
                 <span className="text-sm truncate max-w-[100px]">
-                  {excursion.languages.map((lang) => lang.language).join(', ')}
+                  {excursion.languages.map((lang: any) => lang.language).join(', ')}
                 </span>
               </div>
             )}
@@ -112,7 +112,7 @@ export default function ExcursionCard({ excursion }: ExcursionCardProps) {
             {excursion.languages && excursion.languages.length > 0 && (
               <div className="flex items-center space-x-2">
                 <Languages size={20} className="text-primary" />
-                <span>{excursion.languages.map((lang) => lang.language).join(', ')}</span>
+                <span>{excursion.languages.map((lang: any) => lang.language).join(', ')}</span>
               </div>
             )}
 
@@ -143,7 +143,7 @@ export default function ExcursionCard({ excursion }: ExcursionCardProps) {
               <h4 className="text-lg font-bold mb-2">Gallery</h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {excursion.gallery.map(
-                  (item, index) =>
+                  (item: any, index: number) =>
                     typeof item.image === 'object' &&
                     item.image.url && (
                       <div

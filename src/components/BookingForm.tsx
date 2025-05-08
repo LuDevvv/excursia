@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Excursions } from '@/payload-types'
+import { Excursion } from '@/payload-types'
 import { Loader2 } from 'lucide-react'
 
 interface BookingFormProps {
-  excursion: Excursions
+  excursion: Excursion
   onSuccess?: () => void
 }
 
