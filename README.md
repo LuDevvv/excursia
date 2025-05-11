@@ -1,67 +1,203 @@
-# Payload Blank Template
+# Excursia - Plataforma de Reservas de Excursiones
 
-This template comes configured with the bare minimum to get started on anything you need.
+Excursia es una aplicación web de página única (SPA) para la reserva de excursiones turísticas en República Dominicana, que integra un CMS para la gestión de contenido y una experiencia de usuario moderna y atractiva.
 
-## Quick start
+## Características
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+- **Diseño de Página Única**: Toda la interacción ocurre en una sola vista usando modales
+- **Modales Interactivos**: Los detalles de las excursiones y el proceso de reserva se manejan a través de modales bien estructurados
+- **Multilingüe**: Soporte completo para inglés y español
+- **Gestión de Contenido**: Panel de administración integrado usando Payload CMS
+- **Responsive**: Diseño adaptativo para dispositivos móviles y escritorio
+- **Notificaciones por Email**: Confirmaciones automáticas para clientes y administradores
 
-## Quick Start - local setup
+## Tecnologías
 
-To spin up this template locally, follow these steps:
+- **Frontend**: Next.js 14, TailwindCSS, Framer Motion
+- **CMS**: Payload CMS
+- **Base de Datos**: PostgreSQL
+- **Internacionalización**: next-intl
+- **Email**: Resend API
+- **Despliegue**: Railway
 
-### Clone
+## Estructura del Proyecto
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+```
+excursia/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (frontend)/         # Frontend (landing page)
+│   │   ├── (payload)/          # Payload CMS
+│   │   └── api/                # API endpoints
+│   ├── collections/            # Colecciones de Payload
+│   │   ├── Bookings.ts         # Reservas
+│   │   ├── Excursions.ts       # Excursiones
+│   │   ├── Media.ts            # Multimedia
+│   │   └── Users.ts            # Usuarios
+│   ├── components/             # Componentes React reutilizables
+│   │   ├── modals/             # Componentes de modales
+│   │   └── sections/           # Secciones de la página
+│   ├── messages/               # Traducciones
+│   │   ├── en.json             # Inglés
+│   │   └── es.json             # Español
+│   └── payload.config.ts       # Configuración de Payload CMS
+├── public/                     # Recursos estáticos
+└── docker-compose.yml          # Configuración Docker
+```
 
-### Development
+## Instalación y Desarrollo
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+### Requisitos Previos
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+- Node.js 18+ (20+ recomendado)
+- Docker y Docker Compose (opcional, para desarrollo containerizado)
+- pnpm (recomendado) o npm/yarn
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+### Instalación
 
-#### Docker (Optional)
+1. Clona el repositorio:
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+   ```bash
+   git clone https://github.com/tu-username/excursia.git
+   cd excursia
+   ```
 
-To do so, follow these steps:
+2. Instala las dependencias:
 
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+   ```bash
+   pnpm install
+   ```
 
-## How it works
+3. Configura las variables de entorno:
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+   ```bash
+   cp .env.example .env
+   ```
 
-### Collections
+4. Inicia el servidor de desarrollo:
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+   **Opción 1: Desarrollo local**
 
-- #### Users (Authentication)
+   ```bash
+   pnpm dev
+   ```
 
-  Users are auth-enabled collections that have access to the admin panel.
+   **Opción 2: Desarrollo con Docker**
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+   ```bash
+   docker-compose up
+   ```
 
-- #### Media
+5. Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+### Configurar Cuenta de Administrador
 
-### Docker
+1. Navega a [http://localhost:3000/admin](http://localhost:3000/admin)
+2. Sigue los pasos para crear el primer usuario administrador
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+## Flujo de Usuario
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+La aplicación funciona como una página de destino única (Single Page Application) con la siguiente estructura:
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+1. **Página Principal**: Muestra la barra de navegación, banner principal, sección de excursiones, sección "Por qué elegirnos", FAQ y contacto.
 
-## Questions
+2. **Tarjetas de Excursiones**: Al hacer clic en una tarjeta, se abre un modal con los detalles completos de la excursión.
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+3. **Modal de Detalles**: Muestra información completa con desplazamiento vertical y un botón "Reservar Ahora" fijo en la parte inferior.
+
+4. **Modal de Reserva**: Al hacer clic en "Reservar Ahora", se cierra el modal de detalles y se abre el formulario de reserva.
+
+5. **Proceso de Reserva**: El formulario de reserva se divide en dos pasos (información personal y detalles de la reserva) para mejorar la experiencia del usuario.
+
+6. **Confirmación**: Al enviar el formulario, se muestra un mensaje de éxito y se envía un email de confirmación.
+
+## Colecciones de Payload CMS
+
+### Excursiones
+
+- **Título**: Nombre de la excursión (multilingüe)
+- **Ubicación**: Lugar de la excursión (multilingüe)
+- **Precio**: Costo de la excursión
+- **Descripción**: Detalles completos (editor de texto enriquecido, multilingüe)
+- **Duración**: Tiempo que dura la excursión
+- **Idiomas**: Idiomas disponibles para la excursión
+- **Recogida**: Información sobre el servicio de recogida
+- **Imagen Principal**: Imagen destacada de la excursión
+- **Galería**: Colección de imágenes adicionales
+- **Activo**: Estado de publicación
+
+### Reservas
+
+- **Nombre Completo**: Nombre del cliente
+- **Email**: Correo electrónico del cliente
+- **Teléfono**: Número de contacto
+- **Excursión**: Relación con la colección de excursiones
+- **Adultos**: Cantidad de adultos
+- **Niños**: Cantidad de niños
+- **Fecha de Llegada**: Fecha de la excursión
+- **Hora de Llegada**: Hora de la excursión
+- **Mensaje**: Información adicional
+- **Estado**: Estado de la reserva (pendiente, confirmada, cancelada)
+
+## Internacionalización
+
+La aplicación soporta inglés y español, con capacidad para agregar más idiomas:
+
+- **Detección de Idioma**: Automática basada en el navegador o preferencias del usuario
+- **Cambio de Idioma**: Mediante el selector en la barra de navegación
+- **Contenido Multilingüe**: El CMS almacena campos como título, descripción, etc. en múltiples idiomas
+
+## Despliegue
+
+### Railway
+
+El proyecto incluye una configuración `railway.json` para facilitar el despliegue en Railway:
+
+1. Instala el CLI de Railway:
+
+   ```bash
+   npm install -g @railway/cli
+   ```
+
+2. Enlaza tu proyecto:
+
+   ```bash
+   railway link
+   ```
+
+3. Despliega:
+   ```bash
+   railway up
+   ```
+
+## Variables de Entorno
+
+```
+# Base de Datos
+DATABASE_URI=postgres://usuario:contraseña@host:puerto/basededatos
+
+# Payload CMS
+PAYLOAD_SECRET=tu-clave-secreta-min-32-caracteres
+PAYLOAD_PUBLIC_SERVER_URL=https://tu-dominio.com
+PAYLOAD_PUBLIC_SITE_URL=https://tu-dominio.com
+
+# Resend Email
+RESEND_API_KEY=re_123456789
+BUSINESS_EMAIL=info@tudominio.com
+
+# Next.js
+NODE_ENV=production
+```
+
+## Recursos Adicionales
+
+- [Documentación de Next.js](https://nextjs.org/docs)
+- [Documentación de Payload CMS](https://payloadcms.com/docs)
+- [TailwindCSS](https://tailwindcss.com/docs)
+- [next-intl](https://next-intl-docs.vercel.app/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Railway](https://docs.railway.app/)
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Ver el archivo LICENSE para más detalles.

@@ -15,13 +15,6 @@ module.exports = {
           light: '#fdc166',
         },
       },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: '100%',
-          },
-        },
-      },
     },
   },
   plugins: [require('@tailwindcss/typography')],
