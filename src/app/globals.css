@@ -1,12 +1,22 @@
 @import 'tailwindcss';
 
+:root {
+  --primary: #0a85d1;
+  --primary-darker: #0769a9;
+  --primary-lighter: #3fa5e4;
+  --secondary: #fdaa33;
+  --secondary-darker: #e09529;
+  --secondary-lighter: #fdc166;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply text-gray-800 bg-white;
+    color: #1f2937;
+    background-color: white;
   }
 
   h1,
@@ -15,24 +25,36 @@
   h4,
   h5,
   h6 {
-    @apply font-bold;
+    font-weight: bold;
   }
 }
 
 @layer components {
   .container {
-    @apply px-4 mx-auto max-w-7xl;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80rem;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center px-6 py-3 font-medium rounded-lg transition-colors;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition-property: color, background-color, border-color;
   }
 
   .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-dark;
+    background-color: var(--primary);
+    color: white;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-white hover:bg-secondary-dark;
+    background-color: var(--secondary);
+    color: white;
   }
 }
