@@ -40,34 +40,31 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      {/* <Navbar /> */}
 
-      <main className="flex-grow">
-        {/* Hero Banner Section */}
+      {/* <main className="flex-grow">
         <HeroBanner />
 
-        {/* Excursions Section */}
         <section id="excursions" className="py-20">
           <ExcursionSection excursions={excursions} />
         </section>
 
-        {/* Why Choose Us Section */}
         <section id="why-choose-us" className="py-20 bg-gray-50">
           <WhyChooseUsSection />
         </section>
 
-        {/* FAQ Section */}
         <section id="faq" className="py-20">
           <FAQSection />
         </section>
 
-        {/* Contact Section */}
         <section id="contact" className="py-20 bg-gray-50">
           <ContactSection />
         </section>
-      </main>
+      </main> */}
 
-      <Footer />
+      {/* <Footer /> */}
+
+      <h1>HELLO WORLD</h1>
     </div>
   )
 }

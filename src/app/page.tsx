@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation'
-
-export default function Home() {
-  redirect('/en')
+export default function HomePage() {
+  return null // Middleware will handle redirection
 }
