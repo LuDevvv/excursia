@@ -19,6 +19,7 @@
     "excursionsTitle": "Nuestras Excursiones",
     "excursionsSubtitle": "Elige entre nuestra selección de increíbles excursiones y crea recuerdos inolvidables",
     "noExcursions": "No se encontraron excursiones. Por favor, vuelve a consultar más tarde.",
+    "viewAllExcursions": "Ver Todas Las Excursiones",
     "whyChooseUs": "Por Qué Elegirnos",
     "whyChooseUsSubtitle": "Proporcionamos la mejor experiencia de excursión en la República Dominicana",
     "experiencedGuides": "Guías Experimentados",
@@ -28,7 +29,8 @@
     "flexibleScheduling": "Programación Flexible",
     "flexibleSchedulingText": "Elige el horario que mejor te convenga con nuestras opciones de reserva flexibles.",
     "customerSatisfaction": "Satisfacción del Cliente",
-    "customerSatisfactionText": "Miles de viajeros felices no pueden estar equivocados. ¡Únete a nosotros para una aventura increíble!"
+    "customerSatisfactionText": "Miles de viajeros felices no pueden estar equivocados. ¡Únete a nosotros para una aventura increíble!",
+    "viewDetails": "Ver Detalles"
   },
   "excursion": {
     "price": "Precio",

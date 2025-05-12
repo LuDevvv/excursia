@@ -4,13 +4,16 @@
   --primary: #0a85d1;
   --primary-darker: #0769a9;
   --primary-lighter: #3fa5e4;
-  --secondary: #fdaa33;
-  --secondary-darker: #e09529;
+  --secondary: #fdaa33 !important;
+  --secondary-darker: #e09529 !important;
   --secondary-lighter: #fdc166;
 }
 
 @layer base {
   html {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     scroll-behavior: smooth;
   }
 

@@ -8,6 +8,7 @@ import FAQSection from '@/components/sections/FAQSection'
 import ContactSection from '@/components/sections/ContactSection'
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
+import mockExcursions from 'data/mockExcursions'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,17 +37,17 @@ async function getExcursions() {
 }
 
 export default async function Home() {
-  const excursions = (await getExcursions()) as Excursion[]
+  // const excursions = (await getExcursions()) as Excursion[]
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* <Navbar /> */}
+      <Navbar />
 
-      {/* <main className="flex-grow">
-        <HeroBanner />
+      <main className="w-full flex-grow">
+        <HeroBanner videoSrc="https://videos.pexels.com/video-files/13505086/13505086-hd_1920_1080_30fps.mp4" />
 
         <section id="excursions" className="py-20">
-          <ExcursionSection excursions={excursions} />
+          <ExcursionSection excursions={mockExcursions} />
         </section>
 
         <section id="why-choose-us" className="py-20 bg-gray-50">
@@ -60,11 +61,9 @@ export default async function Home() {
         <section id="contact" className="py-20 bg-gray-50">
           <ContactSection />
         </section>
-      </main> */}
+      </main>
 
-      {/* <Footer /> */}
-
-      <h1>HELLO WORLD</h1>
+      <Footer />
     </div>
   )
 }

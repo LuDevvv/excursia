@@ -2,8 +2,8 @@
 
 import Image from 'next/image'
 import { Excursion } from '@/payload-types'
-import { MapPin, Clock, Languages, Car } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Clock, MapPin, Languages } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface ExcursionCardProps {
   excursion: Excursion
@@ -11,73 +11,109 @@ interface ExcursionCardProps {
 }
 
 export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps) {
-  // Get the image URL safely
+  const t = useTranslations('homepage')
+
+  // Extract image URL - ensure it's always a string
   const imageUrl =
-    typeof excursion.image === 'object' && excursion.image?.url ? excursion.image.url : ''
+    typeof excursion.image === 'object' && excursion.image?.url
+      ? excursion.image.url
+      : '/images/placeholder.jpg' // Fallback image
+
+  // Count languages
+  const languageCount = excursion.languages?.length || 0
+
+  // Safely extract description text
+  const descriptionText = (): string => {
+    try {
+      if (
+        excursion.description &&
+        excursion.description.root &&
+        excursion.description.root.children &&
+        Array.isArray(excursion.description.root.children) &&
+        excursion.description.root.children.length > 0 &&
+        excursion.description.root.children[0] &&
+        excursion.description.root.children[0].children &&
+        Array.isArray(excursion.description.root.children[0].children) &&
+        excursion.description.root.children[0].children.length > 0 &&
+        excursion.description.root.children[0].children[0] &&
+        'text' in excursion.description.root.children[0].children[0] &&
+        typeof excursion.description.root.children[0].children[0].text === 'string'
+      ) {
+        return excursion.description.root.children[0].children[0].text
+      }
+      return ''
+    } catch (e) {
+      return ''
+    }
+  }
 
   return (
-    <motion.div
-      className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105 cursor-pointer"
+    <div
+      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 h-full cursor-pointer border border-gray-100"
       onClick={onClick}
-      whileHover={{ y: -5 }}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.3 }}
     >
-      {/* Card Top with Image */}
-      <div className="relative h-64">
+      {/* Image Container */}
+      <div className="relative h-52 overflow-hidden">
         <Image
-          src={imageUrl || '/images/placeholder.jpg'}
-          alt={excursion.title || 'Excursion'}
+          src={imageUrl}
+          alt={
+            typeof excursion.image === 'object' && excursion.image?.alt
+              ? excursion.image.alt
+              : excursion.title
+          }
           fill
-          className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
 
         {/* Price Badge */}
-        <div className="absolute top-4 right-4 bg-primary text-white font-bold py-1 px-3 rounded-full">
+        <div className="absolute top-3 right-3 bg-secondary text-white px-2.5 py-1 rounded-md text-sm font-medium">
           ${excursion.price}
-        </div>
-
-        {/* Location Badge */}
-        <div className="absolute bottom-4 left-4 bg-white bg-opacity-90 text-black py-1 px-3 rounded-full flex items-center space-x-1">
-          <MapPin size={16} className="text-primary" />
-          <span className="text-sm font-medium truncate max-w-[150px]">{excursion.location}</span>
         </div>
       </div>
 
-      {/* Card Content */}
+      {/* Content */}
       <div className="p-4">
-        <h3 className="text-xl font-bold mb-2 truncate">{excursion.title}</h3>
+        <h3 className="text-lg font-bold mb-2 text-gray-800">{excursion.title}</h3>
 
-        {/* Card Footer - Basic Info */}
-        <div className="flex flex-wrap items-center gap-3 mt-2 text-gray-600">
+        <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+          {/* Location */}
+          <div className="flex items-center text-gray-600">
+            <MapPin size={14} className="mr-1.5 text-primary" />
+            <span className="truncate">{excursion.location}</span>
+          </div>
+
+          {/* Duration */}
           {excursion.duration && (
-            <div className="flex items-center space-x-1">
-              <Clock size={16} className="text-primary" />
-              <span className="text-sm">{excursion.duration}</span>
+            <div className="flex items-center text-gray-600">
+              <Clock size={14} className="mr-1.5 text-primary" />
+              <span className="truncate">{excursion.duration}</span>
             </div>
           )}
 
-          {excursion.languages && excursion.languages.length > 0 && (
-            <div className="flex items-center space-x-1">
-              <Languages size={16} className="text-primary" />
-              <span className="text-sm truncate max-w-[100px]">
-                {excursion.languages.map((lang) => lang.language).join(', ')}
+          {/* Languages - Only show if there's space */}
+          {languageCount > 0 && (
+            <div className="flex items-center text-gray-600 col-span-2">
+              <Languages size={14} className="mr-1.5 text-primary" />
+              <span className="truncate">
+                {languageCount} {languageCount === 1 ? 'Language' : 'Languages'}
               </span>
             </div>
           )}
+        </div>
 
-          {excursion.pickup && (
-            <div className="flex items-center space-x-1">
-              <Car size={16} className="text-primary" />
-              <span className="text-sm">{excursion.pickup}</span>
-            </div>
-          )}
+        {/* Description Preview */}
+        <p className="text-gray-600 text-sm line-clamp-2 mb-4 min-h-[2.5rem]">
+          {descriptionText()}
+        </p>
+
+        {/* Call to Action - More subtle */}
+        <div className="pt-2 border-t border-gray-100">
+          <button className="w-full text-primary font-medium py-1.5 hover:text-primary-dark transition-colors text-center">
+            {t('viewDetails')}
+          </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

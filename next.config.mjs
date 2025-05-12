@@ -7,6 +7,18 @@ const withNextIntl = createNextIntlPlugin()
 const nextConfig = {
   images: {
     domains: ['localhost', 'your-production-domain.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+        pathname: '/**',
+      },
+    ],
     formats: ['image/avif', 'image/webp'],
   },
   reactStrictMode: true,

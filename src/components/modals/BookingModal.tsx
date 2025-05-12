@@ -13,6 +13,8 @@ interface BookingModalProps {
   onSuccess: () => void
 }
 
+// ya ese quedo bien ahora vamos a mejorar el BookingModal. mejora la UI distribucion de los inputs, usa los iconos de lucide etc.
+
 export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: BookingModalProps) {
   const t = useTranslations('booking')
 

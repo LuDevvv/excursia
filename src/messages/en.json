@@ -19,6 +19,7 @@
     "excursionsTitle": "Our Excursions",
     "excursionsSubtitle": "Choose from our selection of amazing excursions and create unforgettable memories",
     "noExcursions": "No excursions found. Please check back later.",
+    "viewAllExcursions": "View All Excursions",
     "whyChooseUs": "Why Choose Us",
     "whyChooseUsSubtitle": "We provide the best excursion experience in the Dominican Republic",
     "experiencedGuides": "Experienced Guides",
@@ -28,7 +29,8 @@
     "flexibleScheduling": "Flexible Scheduling",
     "flexibleSchedulingText": "Choose the time that works best for you with our flexible booking options.",
     "customerSatisfaction": "Customer Satisfaction",
-    "customerSatisfactionText": "Thousands of happy travelers can't be wrong. Join us for an amazing adventure!"
+    "customerSatisfactionText": "Thousands of happy travelers can't be wrong. Join us for an amazing adventure!",
+    "viewDetails": "View Details"
   },
   "excursion": {
     "price": "Price",
