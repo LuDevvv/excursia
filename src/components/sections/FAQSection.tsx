@@ -2,14 +2,8 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
-
-// FAQ interface
-interface FAQ {
-  question: string
-  answer: string
-}
 
 export default function FAQSection() {
   const t = useTranslations('faq')
@@ -21,7 +15,7 @@ export default function FAQSection() {
   }
 
   // FAQ data
-  const faqs: FAQ[] = [
+  const faqs = [
     {
       question: t('weatherQuestion'),
       answer: t('weatherAnswer'),
@@ -57,51 +51,41 @@ export default function FAQSection() {
   ]
 
   return (
-    <div className="container mx-auto px-4">
-      <h2 className="text-4xl font-bold text-center mb-3">{t('title')}</h2>
-      <p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">{t('subtitle')}</p>
+    <div className="py-12 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold mb-3">{t('title')}</h2>
+          <div className="w-16 h-1 bg-primary mx-auto mb-5"></div>
+          <p className="text-gray-600 max-w-2xl mx-auto">{t('subtitle')}</p>
+        </div>
 
-      <motion.div
-        className="max-w-3xl mx-auto"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.5 }}
-      >
-        {faqs.map((faq, index) => (
-          <div key={index} className="mb-4 border border-gray-200 rounded-lg overflow-hidden">
-            <button
-              className="flex justify-between items-center w-full p-5 text-left bg-white hover:bg-gray-50 transition-colors"
-              onClick={() => toggleFAQ(index)}
-            >
-              <span className="font-medium text-lg">{faq.question}</span>
-              {openIndex === index ? (
-                <ChevronUp className="flex-shrink-0 text-primary" />
-              ) : (
-                <ChevronDown className="flex-shrink-0 text-gray-400" />
-              )}
-            </button>
+        <div className="max-w-3xl mx-auto">
+          {faqs.map((faq, index) => (
+            <div key={index} className="mb-4 border border-gray-200 rounded-lg overflow-hidden">
+              <button
+                className={`flex justify-between items-center w-full p-4 text-left ${
+                  openIndex === index ? 'bg-gray-50' : 'bg-white'
+                }`}
+                onClick={() => toggleFAQ(index)}
+              >
+                <span className="font-medium">{faq.question}</span>
+                <ChevronDown
+                  className={`transition-transform duration-200 ${
+                    openIndex === index ? 'transform rotate-180 text-primary' : 'text-gray-400'
+                  }`}
+                />
+              </button>
 
-            <div
-              className={`px-5 py-4 bg-gray-50 transition-all duration-300 ${
-                openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 hidden'
-              }`}
-            >
-              <p className="text-gray-600">{faq.answer}</p>
+              <div
+                className={`px-4 py-3 bg-gray-50 transition-all duration-200 ${
+                  openIndex === index ? 'block' : 'hidden'
+                }`}
+              >
+                <p className="text-gray-600">{faq.answer}</p>
+              </div>
             </div>
-          </div>
-        ))}
-      </motion.div>
-
-      <div className="mt-12 text-center">
-        <h3 className="text-xl font-bold mb-3">{t('stillHaveQuestions')}</h3>
-        <p className="text-gray-600 mb-6">{t('contactUs')}</p>
-        <a
-          href="#contact"
-          className="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-3 px-6 rounded-lg transition-colors"
-        >
-          {t('contactButton')}
-        </a>
+          ))}
+        </div>
       </div>
     </div>
   )

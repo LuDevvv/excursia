@@ -3,8 +3,22 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Excursion } from '@/payload-types'
-import { Loader2, Check } from 'lucide-react'
+import {
+  Loader2,
+  Check,
+  User,
+  Mail,
+  Phone,
+  Users,
+  Calendar,
+  Clock,
+  MessageSquare,
+  ArrowRight,
+  ArrowLeft,
+  BadgeCheck,
+} from 'lucide-react'
 import Modal from './Modal'
+import Image from 'next/image'
 
 interface BookingModalProps {
   isOpen: boolean
@@ -12,8 +26,6 @@ interface BookingModalProps {
   excursion: Excursion
   onSuccess: () => void
 }
-
-// ya ese quedo bien ahora vamos a mejorar el BookingModal. mejora la UI distribucion de los inputs, usa los iconos de lucide etc.
 
 export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: BookingModalProps) {
   const t = useTranslations('booking')
@@ -34,6 +46,12 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
+
+  // Get excursion image
+  const excursionImage =
+    typeof excursion.image === 'object' && excursion.image?.url
+      ? excursion.image.url
+      : '/images/placeholder.jpg'
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -156,237 +174,344 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
 
   const modalTitle = submitSuccess ? t('bookingSuccess') : `${t('bookTitle')} ${excursion.title}`
 
+  // Progress indicators
+  const renderProgressSteps = () => (
+    <div className="flex items-center justify-center mb-6">
+      <div
+        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+          step === 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
+        }`}
+      >
+        1
+      </div>
+      <div className={`h-1 w-12 ${step === 1 ? 'bg-gray-200' : 'bg-primary'}`}></div>
+      <div
+        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+          step === 2 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
+        }`}
+      >
+        2
+      </div>
+    </div>
+  )
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={modalTitle} size="md">
       {submitSuccess ? (
         <div className="p-6 text-center">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-            <Check size={32} className="text-green-600" />
+          <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-5">
+            <BadgeCheck size={40} className="text-green-600" />
           </div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">{t('success')}</h3>
-          <p className="text-gray-500 mb-6">{t('successMessage')}</p>
+          <h3 className="text-xl font-medium text-gray-900 mb-3">{t('success')}</h3>
+          <p className="text-gray-600 mb-8">{t('successMessage')}</p>
           <button
             type="button"
-            className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            className="inline-flex justify-center py-3 px-6 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
             onClick={onClose}
           >
             {t('close')}
           </button>
         </div>
       ) : (
-        <form className="p-6">
-          {step === 1 ? (
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-                {t('personalInfo')}
-              </h3>
-
-              <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('fullName')} *
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    errors.fullName ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('email')} *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('phone')} *
-                </label>
-                <input
-                  type="text"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    errors.phone ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
-              </div>
-
-              <div className="pt-4 border-t mt-6">
-                <button
-                  type="button"
-                  onClick={handleNextStep}
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded transition-colors"
-                >
-                  {t('next')}
-                </button>
+        <div className="p-6">
+          {/* Excursion summary */}
+          <div className="flex items-center mb-6 p-3 bg-gray-50 rounded-lg">
+            <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+              <Image src={excursionImage} alt={excursion.title} fill className="object-cover" />
+            </div>
+            <div className="ml-4">
+              <h4 className="font-medium text-gray-900">{excursion.title}</h4>
+              <div className="flex items-center mt-1">
+                <span className="text-sm text-gray-500">${excursion.price}</span>
+                <span className="mx-2 text-gray-300">•</span>
+                <span className="text-sm text-gray-500">{excursion.duration}</span>
               </div>
             </div>
-          ) : (
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-                {t('bookingDetails')}
-              </h3>
+          </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="adults" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('adults')} *
-                  </label>
-                  <input
-                    type="number"
-                    id="adults"
-                    name="adults"
-                    min="1"
-                    value={formData.adults}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 border rounded-md ${
-                      errors.adults ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  {errors.adults && <p className="mt-1 text-sm text-red-600">{errors.adults}</p>}
-                </div>
+          {renderProgressSteps()}
 
-                <div>
+          <form className="space-y-5">
+            {step === 1 ? (
+              <div className="space-y-5">
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4 flex items-center">
+                  <User size={18} className="mr-2 text-primary" />
+                  {t('personalInfo')}
+                </h3>
+
+                <div className="relative">
                   <label
-                    htmlFor="children"
+                    htmlFor="fullName"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    {t('children')}
+                    {t('fullName')} *
                   </label>
-                  <input
-                    type="number"
-                    id="children"
-                    name="children"
-                    min="0"
-                    value={formData.children}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="arrivalDate"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    {t('arrivalDate')} *
-                  </label>
-                  <input
-                    type="date"
-                    id="arrivalDate"
-                    name="arrivalDate"
-                    value={formData.arrivalDate}
-                    onChange={handleChange}
-                    min={new Date().toISOString().split('T')[0]}
-                    className={`w-full px-3 py-2 border rounded-md ${
-                      errors.arrivalDate ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  {errors.arrivalDate && (
-                    <p className="mt-1 text-sm text-red-600">{errors.arrivalDate}</p>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User size={16} className="text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
+                        errors.fullName ? 'border-red-500' : 'border-gray-300'
+                      } focus:ring-primary focus:border-primary`}
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  {errors.fullName && (
+                    <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
                   )}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="arrivalTime"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    {t('arrivalTime')} *
+                <div className="relative">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('email')} *
                   </label>
-                  <select
-                    id="arrivalTime"
-                    name="arrivalTime"
-                    value={formData.arrivalTime}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 border rounded-md ${
-                      errors.arrivalTime ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail size={16} className="text-gray-400" />
+                    </div>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
+                        errors.email ? 'border-red-500' : 'border-gray-300'
+                      } focus:ring-primary focus:border-primary`}
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                  {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                </div>
+
+                <div className="relative">
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('phone')} *
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Phone size={16} className="text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
+                        errors.phone ? 'border-red-500' : 'border-gray-300'
+                      } focus:ring-primary focus:border-primary`}
+                      placeholder="+1 (123) 456-7890"
+                    />
+                  </div>
+                  {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
+                </div>
+
+                <div className="pt-4 mt-8">
+                  <button
+                    type="button"
+                    onClick={handleNextStep}
+                    className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
                   >
-                    <option value="">{t('selectTime')}</option>
-                    {timeOptions.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.arrivalTime && (
-                    <p className="mt-1 text-sm text-red-600">{errors.arrivalTime}</p>
-                  )}
+                    {t('next')}
+                    <ArrowRight size={18} className="ml-2" />
+                  </button>
                 </div>
               </div>
+            ) : (
+              <div className="space-y-5">
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4 flex items-center">
+                  <Calendar size={18} className="mr-2 text-primary" />
+                  {t('bookingDetails')}
+                </h3>
 
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('additionalInfo')}
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={3}
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder={t('additionalInfoPlaceholder')}
-                ></textarea>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative">
+                    <label
+                      htmlFor="adults"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t('adults')} *
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Users size={16} className="text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="adults"
+                        name="adults"
+                        min="1"
+                        value={formData.adults}
+                        onChange={handleChange}
+                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
+                          errors.adults ? 'border-red-500' : 'border-gray-300'
+                        } focus:ring-primary focus:border-primary`}
+                      />
+                    </div>
+                    {errors.adults && <p className="mt-1 text-sm text-red-600">{errors.adults}</p>}
+                  </div>
+
+                  <div className="relative">
+                    <label
+                      htmlFor="children"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t('children')}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Users size={16} className="text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="children"
+                        name="children"
+                        min="0"
+                        value={formData.children}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-3 py-2.5 border rounded-lg border-gray-300 focus:ring-primary focus:border-primary"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative">
+                    <label
+                      htmlFor="arrivalDate"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t('arrivalDate')} *
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Calendar size={16} className="text-gray-400" />
+                      </div>
+                      <input
+                        type="date"
+                        id="arrivalDate"
+                        name="arrivalDate"
+                        value={formData.arrivalDate}
+                        onChange={handleChange}
+                        min={new Date().toISOString().split('T')[0]}
+                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
+                          errors.arrivalDate ? 'border-red-500' : 'border-gray-300'
+                        } focus:ring-primary focus:border-primary`}
+                      />
+                    </div>
+                    {errors.arrivalDate && (
+                      <p className="mt-1 text-sm text-red-600">{errors.arrivalDate}</p>
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <label
+                      htmlFor="arrivalTime"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      {t('arrivalTime')} *
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Clock size={16} className="text-gray-400" />
+                      </div>
+                      <select
+                        id="arrivalTime"
+                        name="arrivalTime"
+                        value={formData.arrivalTime}
+                        onChange={handleChange}
+                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg appearance-none ${
+                          errors.arrivalTime ? 'border-red-500' : 'border-gray-300'
+                        } focus:ring-primary focus:border-primary`}
+                      >
+                        <option value="">{t('selectTime')}</option>
+                        {timeOptions.map((time) => (
+                          <option key={time} value={time}>
+                            {time}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        <svg
+                          className="fill-current h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
+                      </div>
+                    </div>
+                    {errors.arrivalTime && (
+                      <p className="mt-1 text-sm text-red-600">{errors.arrivalTime}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('additionalInfo')}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+                      <MessageSquare size={16} className="text-gray-400" />
+                    </div>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={3}
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                      placeholder={t('additionalInfoPlaceholder')}
+                    ></textarea>
+                  </div>
+                </div>
+
+                {submitError && (
+                  <div className="bg-red-50 p-4 rounded-lg text-red-700 text-sm">{submitError}</div>
+                )}
+
+                <div className="pt-4 mt-4 grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={handlePrevStep}
+                    className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors"
+                  >
+                    <ArrowLeft size={18} className="mr-2" />
+                    {t('back')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className={`flex items-center justify-center bg-primary text-white font-medium py-3 px-4 rounded-lg transition-colors ${
+                      isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-dark'
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin mr-2" />
+                        {t('submitting')}
+                      </>
+                    ) : (
+                      <>
+                        {t('submit')}
+                        <Check size={18} className="ml-2" />
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
-
-              {submitError && (
-                <div className="bg-red-50 p-3 rounded text-red-700 text-sm">{submitError}</div>
-              )}
-
-              <div className="pt-4 border-t mt-6 flex space-x-3">
-                <button
-                  type="button"
-                  onClick={handlePrevStep}
-                  className="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded transition-colors"
-                >
-                  {t('back')}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className={`w-1/2 bg-primary text-white font-medium py-2 px-4 rounded transition-colors ${
-                    isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-dark'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <Loader2 size={20} className="animate-spin mr-2" />
-                      {t('submitting')}
-                    </span>
-                  ) : (
-                    t('submit')
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
-        </form>
+            )}
+          </form>
+        </div>
       )}
     </Modal>
   )

@@ -5,7 +5,6 @@ import HeroBanner from '@/components/HeroBanner'
 import ExcursionSection from '@/components/sections/ExcursionSection'
 import WhyChooseUsSection from '@/components/sections/WhyChooseUsSection'
 import FAQSection from '@/components/sections/FAQSection'
-import ContactSection from '@/components/sections/ContactSection'
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import mockExcursions from 'data/mockExcursions'
@@ -50,16 +49,10 @@ export default async function Home() {
           <ExcursionSection excursions={mockExcursions} />
         </section>
 
-        <section id="why-choose-us" className="py-20 bg-gray-50">
-          <WhyChooseUsSection />
-        </section>
+        <WhyChooseUsSection />
 
         <section id="faq" className="py-20">
           <FAQSection />
-        </section>
-
-        <section id="contact" className="py-20 bg-gray-50">
-          <ContactSection />
         </section>
       </main>
 

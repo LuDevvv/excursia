@@ -30,7 +30,19 @@
     "flexibleSchedulingText": "Choose the time that works best for you with our flexible booking options.",
     "customerSatisfaction": "Customer Satisfaction",
     "customerSatisfactionText": "Thousands of happy travelers can't be wrong. Join us for an amazing adventure!",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "unforgettableExperiences": "Unforgettable Experiences",
+    "localAgency": "Local Agency",
+    "localAgencyText": "We provide authentic experiences of the Dominican Republic.",
+    "quickBooking": "Quick Booking",
+    "quickBookingText": "With just a few clicks, you can secure your spot on our excursions.",
+    "guidedTours": "Guided Tours",
+    "guidedToursText": "We have expert guides who will accompany you every step of the way.",
+    "bestPrice": "Mejores Precio",
+    "bestPriceText": "We believe exploring the world shouldn't be an unattainable luxury.",
+    "secureBooking": "100% Secure Booking",
+    "fiveStarExperiences": "5-Star Rated Experiences",
+    "freeCancellation": "Free Cancellation"
   },
   "excursion": {
     "price": "Price",

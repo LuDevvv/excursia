@@ -151,7 +151,7 @@ export default function HeroBanner({
           >
             <Link
               href={buttonLink}
-              className="inline-block bg-secondary hover:bg-secondary-dark text-white font-bold py-4 px-12 rounded-lg transition-all text-lg uppercase tracking-wider shadow-lg"
+              className="inline-block bg-[#fdaa33] text-white font-bold py-4 px-12 rounded-lg transition-all text-lg uppercase tracking-wider shadow-lg"
             >
               {t(buttonTextKey)}
             </Link>

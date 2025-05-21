@@ -67,7 +67,7 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
         />
 
         {/* Price Badge */}
-        <div className="absolute top-3 right-3 bg-secondary text-white px-2.5 py-1 rounded-md text-sm font-medium">
+        <div className="absolute top-3 right-3 bg-[#fdaa33] text-white px-2.5 py-1 rounded-md text-sm font-medium">
           ${excursion.price}
         </div>
       </div>

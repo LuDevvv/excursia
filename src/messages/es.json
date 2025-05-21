@@ -30,7 +30,19 @@
     "flexibleSchedulingText": "Elige el horario que mejor te convenga con nuestras opciones de reserva flexibles.",
     "customerSatisfaction": "Satisfacción del Cliente",
     "customerSatisfactionText": "Miles de viajeros felices no pueden estar equivocados. ¡Únete a nosotros para una aventura increíble!",
-    "viewDetails": "Ver Detalles"
+    "viewDetails": "Ver Detalles",
+    "unforgettableExperiences": "Experiencias Inolvidables",
+    "localAgency": "Agencia Local",
+    "localAgencyText": "Proporcionamos experiencias auténticas de la República Dominicana.",
+    "quickBooking": "Reserva Rápida",
+    "quickBookingText": "Con solo unos clics, puedes asegurar tu lugar en nuestras excursiones.",
+    "guidedTours": "Tours Guiados",
+    "guidedToursText": "Tenemos guías expertos que te acompañarán en cada paso del camino.",
+    "bestPrice": "Mejores Precios",
+    "bestPriceText": "Creemos que explorar el mundo no debería ser un lujo inalcanzable.",
+    "secureBooking": "Reserva 100% Segura",
+    "fiveStarExperiences": "Experiencias 5 Estrellas",
+    "freeCancellation": "Cancelación Gratuita"
   },
   "excursion": {
     "price": "Precio",
