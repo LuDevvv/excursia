@@ -114,7 +114,7 @@ export default function ExcursionSection({ excursions }: ExcursionSectionProps) 
   if (!excursions.length) return null
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div id="excursions" className="container mx-auto px-4 py-12">
       <div className="mb-8 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('excursionsTitle')}</h2>
         <p className="text-gray-600 max-w-3xl mx-auto">{t('excursionsSubtitle')}</p>

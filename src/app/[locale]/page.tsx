@@ -37,25 +37,18 @@ async function getExcursions() {
 
 export default async function Home() {
   // const excursions = (await getExcursions()) as Excursion[]
-
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-
       <main className="w-full flex-grow">
-        <HeroBanner videoSrc="https://videos.pexels.com/video-files/13505086/13505086-hd_1920_1080_30fps.mp4" />
-
-        <section id="excursions" className="py-20">
-          <ExcursionSection excursions={mockExcursions} />
-        </section>
-
+        <HeroBanner
+          videoSrc="https://videos.pexels.com/video-files/13505086/13505086-hd_1920_1080_30fps.mp4"
+          posterSrc="https://plus.unsplash.com/premium_photo-1682390303366-7463dcbec281?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        />
+        <ExcursionSection excursions={mockExcursions} />
         <WhyChooseUsSection />
-
-        <section id="faq" className="py-20">
-          <FAQSection />
-        </section>
+        <FAQSection />
       </main>
-
       <Footer />
     </div>
   )

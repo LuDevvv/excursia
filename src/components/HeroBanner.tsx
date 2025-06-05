@@ -3,8 +3,8 @@
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useEffect, useState, useRef } from 'react'
 import { ChevronDown } from 'lucide-react'
+import VideoBackground from './VideoBackground'
 
 interface HeroBannerProps {
   videoSrc?: string
@@ -21,12 +21,10 @@ export default function HeroBanner({
   titleKey = 'title',
   subtitleKey = 'subtitle',
   buttonTextKey = 'bookNow',
-  buttonLink = '/booking',
+  buttonLink = '#excursions',
 }: HeroBannerProps) {
   const t = useTranslations('header')
-  const videoRef = useRef<HTMLVideoElement>(null)
 
-  // Scroll to next section function
   const scrollToNextSection = () => {
     window.scrollTo({
       top: window.innerHeight,
@@ -34,24 +32,6 @@ export default function HeroBanner({
     })
   }
 
-  // Handle video loop
-  useEffect(() => {
-    const video = videoRef.current
-    if (video) {
-      const handleEnded = () => {
-        video.play().catch((error) => {
-          console.error('Error replaying video:', error)
-        })
-      }
-
-      video.addEventListener('ended', handleEnded)
-      return () => {
-        video.removeEventListener('ended', handleEnded)
-      }
-    }
-  }, [])
-
-  // Animation variants
   const titleVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: {
@@ -101,24 +81,7 @@ export default function HeroBanner({
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full bg-black">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
-          poster={posterSrc}
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-
-        {/* Overlay */}
-        <div className="absolute inset-0 z-10 bg-black" style={{ opacity: 0.6 }}></div>
-      </div>
+      <VideoBackground src={videoSrc} poster={posterSrc} title={t(titleKey)} />
 
       {/* Content */}
       <div className="relative z-30 h-full w-full flex flex-col items-center justify-center text-center px-4">
@@ -151,7 +114,7 @@ export default function HeroBanner({
           >
             <Link
               href={buttonLink}
-              className="inline-block bg-[#fdaa33] text-white font-bold py-4 px-12 rounded-lg transition-all text-lg uppercase tracking-wider shadow-lg"
+              className="inline-block bg-secondary hover:bg-secondary-dark text-white font-bold py-4 px-12 rounded-lg transition-all text-lg uppercase tracking-wider shadow-lg"
             >
               {t(buttonTextKey)}
             </Link>

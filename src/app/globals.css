@@ -4,9 +4,18 @@
   --primary: #0a85d1;
   --primary-darker: #0769a9;
   --primary-lighter: #3fa5e4;
-  --secondary: #fdaa33 !important;
-  --secondary-darker: #e09529 !important;
+  --secondary: #fdaa33;
+  --secondary-darker: #e09529;
   --secondary-lighter: #fdc166;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-darker);
+  --color-primary-light: var(--primary-lighter);
+  --color-secondary: var(--secondary);
+  --color-secondary-dark: var(--secondary-darker);
+  --color-secondary-light: var(--secondary-lighter);
 }
 
 @layer base {
@@ -60,4 +69,17 @@
     background-color: var(--secondary);
     color: white;
   }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar,
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

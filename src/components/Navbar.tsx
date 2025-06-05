@@ -46,7 +46,6 @@ export default function Navbar() {
     { href: '#excursions', translationKey: 'attractions', icon: <Map size={16} /> },
     { href: '#why-choose-us', translationKey: 'thePark', icon: <Home size={16} /> },
     { href: '#faq', translationKey: 'planYourVisit', icon: <HelpCircle size={16} /> },
-    { href: '#contact', translationKey: 'contact', icon: <Mail size={16} /> },
   ]
 
   return (

@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { MapPin, Calendar, Compass, Ticket, ChevronRight, Shield, Star, Clock } from 'lucide-react'
+import { MapPin, Calendar, Compass, Ticket, Shield, Star, Clock } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useState, useCallback } from 'react'
 
@@ -88,7 +88,7 @@ export default function WhyChooseUsSection() {
   }
 
   return (
-    <section id="why-choose-us" className="py-16 md:py-24 relative overflow-hidden">
+    <section id="why-choose-us" className="py-12 relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 relative">
         <motion.div
           initial={{ opacity: 0, y: -10 }}

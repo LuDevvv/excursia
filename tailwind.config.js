@@ -4,12 +4,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--primary)',
-        'primary-dark': 'var(--primary-darker)',
-        'primary-light': 'var(--primary-lighter)',
-        secondary: 'var(--secondary)',
-        'secondary-dark': 'var(--secondary-darker)',
-        'secondary-light': 'var(--secondary-lighter)',
+        primary: {
+          DEFAULT: 'var(--primary)',
+          dark: 'var(--primary-darker)',
+          light: 'var(--primary-lighter)',
+        },
+        secondary: {
+          DEFAULT: 'var(--secondary)',
+          dark: 'var(--secondary-darker)',
+          light: 'var(--secondary-lighter)',
+        },
       },
     },
   },
