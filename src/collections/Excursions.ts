@@ -52,7 +52,7 @@ export const Excursions: CollectionConfig = {
       admin: {
         placeholder: 'Enter excursion title...',
       },
-      validate: (value, { data }) => {
+      validate: (value: any, { data }: any) => {
         if (!value || typeof value !== 'string' || value.length < 3) {
           return 'Title must be at least 3 characters long'
         }
@@ -108,7 +108,7 @@ export const Excursions: CollectionConfig = {
         description: 'Price in USD per person',
         step: 0.01,
       },
-      validate: (value, { data }) => {
+      validate: (value: any, { data }: any) => {
         if (typeof value !== 'number' || value <= 0) {
           return 'Price must be greater than 0'
         }
@@ -159,7 +159,7 @@ export const Excursions: CollectionConfig = {
       admin: {
         description: 'Detailed description of the excursion',
       },
-      validate: (value, { data }) => {
+      validate: (value: any, { data }: any) => {
         if (!value || value.root?.children?.length === 0) {
           return 'Description is required'
         }

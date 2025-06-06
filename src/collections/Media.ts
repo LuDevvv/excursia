@@ -71,7 +71,6 @@ export const Media: CollectionConfig = {
     adminThumbnail: 'thumbnail',
     mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'],
   },
-
   hooks: {
     beforeChange: [
       ({ data }) => {
@@ -85,7 +84,6 @@ export const Media: CollectionConfig = {
       },
     ],
   },
-
   fields: [
     {
       name: 'alt',
@@ -96,7 +94,7 @@ export const Media: CollectionConfig = {
         placeholder: 'Describe this image for accessibility...',
         description: 'Alt text is important for accessibility and SEO',
       },
-      validate: (value, { data }) => {
+      validate: (value: any, { data }: any) => {
         if (!value || typeof value !== 'string' || value.length < 3) {
           return 'Alt text must be at least 3 characters long'
         }

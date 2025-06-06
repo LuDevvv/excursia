@@ -20,7 +20,50 @@ export async function seed() {
       return
     }
 
-    // Create sample excursions
+    // First, create some sample media files to use as images
+    console.log('📸 Creating sample media files...')
+
+    const sampleImages = [
+      {
+        alt: 'Beautiful Saona Island with pristine white sand beaches',
+        category: 'excursion',
+        tags: 'beach, island, caribbean, paradise',
+        location: 'Saona Island',
+        filename: 'saona-island.jpg',
+        mimeType: 'image/jpeg',
+        url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop',
+      },
+      {
+        alt: 'Off-road buggy adventure through Dominican countryside',
+        category: 'adventure',
+        tags: 'buggy, adventure, offroad, countryside',
+        location: 'La Romana',
+        filename: 'buggy-adventure.jpg',
+        mimeType: 'image/jpeg',
+        url: 'https://images.unsplash.com/photo-1558618563-bee19394db6d?w=800&h=600&fit=crop',
+      },
+      {
+        alt: 'Luxury catamaran sailing into Caribbean sunset',
+        category: 'water-sports',
+        tags: 'catamaran, sunset, sailing, cruise',
+        location: 'Cap Cana',
+        filename: 'catamaran-sunset.jpg',
+        mimeType: 'image/jpeg',
+        url: 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=800&h=600&fit=crop',
+      },
+    ]
+
+    const createdImages = []
+    for (const imageData of sampleImages) {
+      const image = await payload.create({
+        collection: 'media',
+        data: imageData,
+      })
+      createdImages.push(image)
+      console.log(`✅ Created media: ${image.alt}`)
+    }
+
+    // Create sample excursions with proper image references
     const sampleExcursions = [
       {
         title: 'Saona Island Paradise',
@@ -50,7 +93,7 @@ export async function seed() {
                 version: 1,
               },
             ],
-            direction: 'ltr',
+            direction: 'ltr' as const,
             format: '',
             indent: 0,
             version: 1,
@@ -88,6 +131,7 @@ export async function seed() {
           minGuests: 2,
           maxGuests: 50,
         },
+        image: createdImages[0].id, // Reference to the first created image
         inclusions: {
           included: [
             { item: 'Professional multilingual guide' },
@@ -187,6 +231,7 @@ export async function seed() {
           minGuests: 1,
           maxGuests: 20,
         },
+        image: createdImages[1].id, // Reference to the second created image
         inclusions: {
           included: [
             { item: 'Buggy rental and safety equipment' },
@@ -283,6 +328,7 @@ export async function seed() {
           minGuests: 6,
           maxGuests: 40,
         },
+        image: createdImages[2].id, // Reference to the third created image
         inclusions: {
           included: [
             { item: 'Luxury catamaran cruise' },

@@ -35,7 +35,7 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
     if (typeof excursion.duration === 'string') {
       return excursion.duration
     }
-    
+
     // If duration is an object with new structure (if types are generated)
     if (excursion.duration && typeof excursion.duration === 'object') {
       const durationObj = excursion.duration as any
@@ -54,20 +54,22 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
         }
       }
     }
-    
+
     return null
   }
 
   // Format languages
   const formatLanguages = () => {
     if (excursion.languages && excursion.languages.length > 0) {
-      const languageNames = excursion.languages.map(lang => {
-        if (typeof lang.language === 'string') {
-          return lang.language.charAt(0).toUpperCase() + lang.language.slice(1)
-        }
-        return lang.language || ''
-      }).filter(Boolean)
-      
+      const languageNames = excursion.languages
+        .map((lang) => {
+          if (typeof lang.language === 'string') {
+            return lang.language.charAt(0).toUpperCase() + lang.language.slice(1)
+          }
+          return lang.language || ''
+        })
+        .filter(Boolean)
+
       if (languageNames.length === 1) {
         return languageNames[0]
       } else if (languageNames.length === 2) {
@@ -96,7 +98,7 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
     if (shortDescription) {
       return shortDescription
     }
-    
+
     // Try to extract from rich text description
     if (excursion.description) {
       try {
@@ -119,7 +121,7 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
         console.warn('Error extracting description:', e)
       }
     }
-    
+
     return 'Discover an amazing experience in the Dominican Republic.'
   }
 
@@ -127,7 +129,7 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
   const formatPrice = () => {
     const priceInfo = (excursion as any).priceInfo
     const currency = priceInfo?.currency || 'USD'
-    const symbol = currency === 'USD' ? ' : currency === 'EUR' ? '€' : '
+    const symbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '$'
     return `${symbol}${excursion.price}`
   }
 
@@ -228,26 +230,25 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">
-          {description}
-        </p>
+        <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">{description}</p>
 
         {/* Transportation Info */}
         {transportation?.pickup && (
           <div className="mb-4">
-            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-              transportation.pickup === 'included' 
-                ? 'bg-green-100 text-green-800' 
-                : transportation.pickup === 'extra-cost'
-                ? 'bg-yellow-100 text-yellow-800'
-                : 'bg-blue-100 text-blue-800'
-            }`}>
-              {transportation.pickup === 'included' 
+            <span
+              className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                transportation.pickup === 'included'
+                  ? 'bg-green-100 text-green-800'
+                  : transportation.pickup === 'extra-cost'
+                    ? 'bg-yellow-100 text-yellow-800'
+                    : 'bg-blue-100 text-blue-800'
+              }`}
+            >
+              {transportation.pickup === 'included'
                 ? 'Hotel pickup included'
                 : transportation.pickup === 'extra-cost'
-                ? 'Hotel pickup available'
-                : 'Meet at location'
-              }
+                  ? 'Hotel pickup available'
+                  : 'Meet at location'}
             </span>
           </div>
         )}
