@@ -90,7 +90,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'en' | 'es';
   user: User & {
     collection: 'users';
   };
@@ -135,12 +135,45 @@ export interface User {
   password?: string | null;
 }
 /**
+ * Manage images and media files
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  /**
+   * Alt text is important for accessibility and SEO
+   */
   alt: string;
+  /**
+   * Caption text that may be displayed below the image
+   */
+  caption?: string | null;
+  /**
+   * Categorize this media for better organization
+   */
+  category?: ('excursion' | 'location' | 'activity' | 'hero' | 'gallery' | 'graphics' | 'other') | null;
+  /**
+   * Add tags to help organize and search media files
+   */
+  tags?: string | null;
+  /**
+   * Attribution for the image source
+   */
+  photographer?: string | null;
+  /**
+   * Geographic location of the image
+   */
+  location?: string | null;
+  /**
+   * When was this photo taken?
+   */
+  dateCreated?: string | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -152,17 +185,78 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    gallery?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
+ * Manage tour excursions and activities
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "excursions".
  */
 export interface Excursion {
   id: number;
   title: string;
+  /**
+   * URL-friendly version of the title (auto-generated)
+   */
+  slug: string;
   location: string;
+  /**
+   * Select the primary category for this excursion
+   */
+  category: 'beach-islands' | 'adventure' | 'cultural' | 'water-sports' | 'nature' | 'city';
+  /**
+   * Price in USD per person
+   */
   price: number;
-  description?: {
+  priceInfo?: {
+    currency?: ('USD' | 'EUR' | 'DOP') | null;
+    /**
+     * Discount percentage for children (0-100%)
+     */
+    childDiscount?: number | null;
+    /**
+     * Discount percentage for groups of 10+ (0-100%)
+     */
+    groupDiscount?: number | null;
+  };
+  /**
+   * Detailed description of the excursion
+   */
+  description: {
     root: {
       type: string;
       children: {
@@ -176,25 +270,123 @@ export interface Excursion {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
-  duration?: string | null;
-  languages?:
-    | {
-        language?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  pickup?: string | null;
+  };
+  /**
+   * Brief description for cards and previews (max 200 chars)
+   */
+  shortDescription?: string | null;
+  duration?: {
+    hours?: number | null;
+    minutes?: number | null;
+    /**
+     * Human-readable duration (e.g., "Full Day", "8 hours")
+     */
+    display?: string | null;
+  };
+  schedule?: {
+    departureTime?: string | null;
+    returnTime?: string | null;
+    daysAvailable?: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[] | null;
+  };
+  /**
+   * Languages available for this excursion
+   */
+  languages: {
+    language: 'english' | 'spanish' | 'french' | 'german' | 'italian' | 'portuguese' | 'dutch' | 'russian';
+    level?: ('native' | 'fluent' | 'conversational' | 'basic') | null;
+    id?: string | null;
+  }[];
+  transportation: {
+    pickup: 'included' | 'extra-cost' | 'meet-location';
+    pickupNote?: string | null;
+    meetingPoint?: string | null;
+  };
+  capacity?: {
+    /**
+     * Minimum number of guests required
+     */
+    minGuests?: number | null;
+    /**
+     * Maximum number of guests allowed
+     */
+    maxGuests?: number | null;
+  };
+  /**
+   * Main featured image for the excursion
+   */
   image: number | Media;
+  /**
+   * Additional images for the gallery
+   */
   gallery?:
     | {
         image: number | Media;
+        caption?: string | null;
         id?: string | null;
       }[]
     | null;
+  inclusions?: {
+    /**
+     * What's included in the excursion
+     */
+    included?:
+      | {
+          item: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * What's NOT included
+     */
+    notIncluded?:
+      | {
+          item: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  requirements?: {
+    ageRestriction?: {
+      minAge?: number | null;
+      maxAge?: number | null;
+    };
+    fitnessLevel?: ('easy' | 'moderate' | 'challenging' | 'strenuous') | null;
+    whatToBring?:
+      | {
+          item: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  bookingSettings?: {
+    /**
+     * Minimum hours in advance to book
+     */
+    advanceBooking?: number | null;
+    cancellationPolicy?: ('24h-free' | '48h-free' | '72h-free' | 'non-refundable' | 'custom') | null;
+    customCancellationPolicy?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    keywords?: string | null;
+  };
+  /**
+   * Feature this excursion on the homepage
+   */
+  featured?: boolean | null;
+  /**
+   * Mark as popular excursion
+   */
+  popular?: boolean | null;
+  /**
+   * Make this excursion available for booking
+   */
   active?: boolean | null;
+  publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -301,6 +493,18 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
+  category?: T;
+  tags?: T;
+  photographer?: T;
+  location?: T;
+  dateCreated?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -312,6 +516,50 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        gallery?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -319,27 +567,115 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ExcursionsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   location?: T;
+  category?: T;
   price?: T;
+  priceInfo?:
+    | T
+    | {
+        currency?: T;
+        childDiscount?: T;
+        groupDiscount?: T;
+      };
   description?: T;
-  duration?: T;
+  shortDescription?: T;
+  duration?:
+    | T
+    | {
+        hours?: T;
+        minutes?: T;
+        display?: T;
+      };
+  schedule?:
+    | T
+    | {
+        departureTime?: T;
+        returnTime?: T;
+        daysAvailable?: T;
+      };
   languages?:
     | T
     | {
         language?: T;
+        level?: T;
         id?: T;
       };
-  pickup?: T;
+  transportation?:
+    | T
+    | {
+        pickup?: T;
+        pickupNote?: T;
+        meetingPoint?: T;
+      };
+  capacity?:
+    | T
+    | {
+        minGuests?: T;
+        maxGuests?: T;
+      };
   image?: T;
   gallery?:
     | T
     | {
         image?: T;
+        caption?: T;
         id?: T;
       };
+  inclusions?:
+    | T
+    | {
+        included?:
+          | T
+          | {
+              item?: T;
+              id?: T;
+            };
+        notIncluded?:
+          | T
+          | {
+              item?: T;
+              id?: T;
+            };
+      };
+  requirements?:
+    | T
+    | {
+        ageRestriction?:
+          | T
+          | {
+              minAge?: T;
+              maxAge?: T;
+            };
+        fitnessLevel?: T;
+        whatToBring?:
+          | T
+          | {
+              item?: T;
+              id?: T;
+            };
+      };
+  bookingSettings?:
+    | T
+    | {
+        advanceBooking?: T;
+        cancellationPolicy?: T;
+        customCancellationPolicy?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        keywords?: T;
+      };
+  featured?: T;
+  popular?: T;
   active?: T;
+  publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

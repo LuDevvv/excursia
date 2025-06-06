@@ -26,7 +26,7 @@ export async function seed() {
     const sampleImages = [
       {
         alt: 'Beautiful Saona Island with pristine white sand beaches',
-        category: 'excursion',
+        category: 'excursion' as const,
         tags: 'beach, island, caribbean, paradise',
         location: 'Saona Island',
         filename: 'saona-island.jpg',
@@ -35,7 +35,7 @@ export async function seed() {
       },
       {
         alt: 'Off-road buggy adventure through Dominican countryside',
-        category: 'adventure',
+        category: 'activity' as const,
         tags: 'buggy, adventure, offroad, countryside',
         location: 'La Romana',
         filename: 'buggy-adventure.jpg',
@@ -44,7 +44,7 @@ export async function seed() {
       },
       {
         alt: 'Luxury catamaran sailing into Caribbean sunset',
-        category: 'water-sports',
+        category: 'gallery' as const,
         tags: 'catamaran, sunset, sailing, cruise',
         location: 'Cap Cana',
         filename: 'catamaran-sunset.jpg',
@@ -69,15 +69,8 @@ export async function seed() {
         title: 'Saona Island Paradise',
         slug: 'saona-island-paradise',
         location: 'Punta Cana',
-        category: 'beach-islands',
+        category: 'beach-islands' as const,
         price: 89,
-        priceInfo: {
-          currency: 'USD',
-          childDiscount: 50,
-          groupDiscount: 15,
-        },
-        shortDescription:
-          'Experience the breathtaking beauty of Saona Island with pristine beaches and crystal clear waters.',
         description: {
           root: {
             type: 'root',
@@ -87,14 +80,14 @@ export async function seed() {
                 children: [
                   {
                     type: 'text',
-                    text: 'Experience the breathtaking beauty of Saona Island, a tropical paradise located in the eastern part of the Dominican Republic. This full-day excursion takes you to pristine white sandy beaches, crystal clear turquoise waters, and natural swimming pools. Enjoy a delicious buffet lunch, open bar, and plenty of time to relax on the beach or explore the island.',
+                    text: 'Experience the breathtaking beauty of Saona Island, a tropical paradise located in the eastern part of the Dominican Republic.',
                   },
                 ],
                 version: 1,
               },
             ],
             direction: 'ltr' as const,
-            format: '',
+            format: 'left' as const,
             indent: 0,
             version: 1,
           },
@@ -104,90 +97,23 @@ export async function seed() {
           minutes: 0,
           display: 'Full Day (9 hours)',
         },
-        schedule: {
-          departureTime: '08:00 AM',
-          returnTime: '05:00 PM',
-          daysAvailable: [
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday',
-            'sunday',
-          ],
-        },
         languages: [
-          { language: 'english', level: 'native' },
-          { language: 'spanish', level: 'native' },
-          { language: 'french', level: 'fluent' },
-          { language: 'german', level: 'fluent' },
+          { language: 'english' as const, level: 'native' as const },
+          { language: 'spanish' as const, level: 'native' as const },
         ],
         transportation: {
-          pickup: 'included',
+          pickup: 'included' as const,
           pickupNote: 'Hotel pickup included from Punta Cana and Bavaro area',
         },
-        capacity: {
-          minGuests: 2,
-          maxGuests: 50,
-        },
-        image: createdImages[0].id, // Reference to the first created image
-        inclusions: {
-          included: [
-            { item: 'Professional multilingual guide' },
-            { item: 'Buffet lunch with fresh seafood' },
-            { item: 'Open bar with tropical drinks' },
-            { item: 'Round-trip transportation' },
-            { item: 'Natural swimming pool visit' },
-            { item: 'Beach chairs and umbrellas' },
-          ],
-          notIncluded: [
-            { item: 'Personal expenses and souvenirs' },
-            { item: 'Tips for guide and crew' },
-            { item: 'Professional photos (available for purchase)' },
-          ],
-        },
-        requirements: {
-          ageRestriction: {
-            minAge: 0,
-            maxAge: 99,
-          },
-          fitnessLevel: 'easy',
-          whatToBring: [
-            { item: 'Swimwear and towel' },
-            { item: 'Sunscreen and sunglasses' },
-            { item: 'Camera for memorable photos' },
-            { item: 'Comfortable sandals' },
-          ],
-        },
-        bookingSettings: {
-          advanceBooking: 24,
-          cancellationPolicy: '24h-free',
-        },
-        seo: {
-          metaTitle: 'Saona Island Full Day Excursion - Excursia',
-          metaDescription:
-            'Discover the paradise of Saona Island with our full-day excursion. Pristine beaches, natural pools, and unforgettable memories await.',
-          keywords: 'saona island, dominican republic, beach excursion, punta cana tours',
-        },
-        featured: true,
-        popular: true,
+        image: createdImages[0].id,
         active: true,
-        publishedAt: new Date().toISOString(),
       },
       {
         title: 'Buggy Adventure Tour',
         slug: 'buggy-adventure-tour',
         location: 'La Romana',
-        category: 'adventure',
+        category: 'adventure' as const,
         price: 65,
-        priceInfo: {
-          currency: 'USD',
-          childDiscount: 30,
-          groupDiscount: 10,
-        },
-        shortDescription:
-          'Get your adrenaline pumping with an off-road buggy adventure through the Dominican countryside.',
         description: {
           root: {
             type: 'root',
@@ -197,14 +123,14 @@ export async function seed() {
                 children: [
                   {
                     type: 'text',
-                    text: 'Get ready for an adrenaline-pumping off-road adventure through the Dominican countryside. Drive your own buggy through scenic trails, mud puddles, and rural villages. Visit a traditional Dominican house, learn about local products like coffee and cacao, and cool off at a natural cenote. This exciting half-day tour is perfect for adventure seekers and nature lovers.',
+                    text: 'Get ready for an adrenaline-pumping off-road adventure through the Dominican countryside.',
                   },
                 ],
                 version: 1,
               },
             ],
-            direction: 'ltr',
-            format: '',
+            direction: 'ltr' as const,
+            format: 'left' as const,
             indent: 0,
             version: 1,
           },
@@ -214,76 +140,23 @@ export async function seed() {
           minutes: 0,
           display: 'Half Day (4 hours)',
         },
-        schedule: {
-          departureTime: '09:00 AM',
-          returnTime: '01:00 PM',
-          daysAvailable: ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-        },
         languages: [
-          { language: 'english', level: 'fluent' },
-          { language: 'spanish', level: 'native' },
+          { language: 'english' as const, level: 'fluent' as const },
+          { language: 'spanish' as const, level: 'native' as const },
         ],
         transportation: {
-          pickup: 'extra-cost',
+          pickup: 'extra-cost' as const,
           pickupNote: 'Hotel pickup available for additional $15 per person',
         },
-        capacity: {
-          minGuests: 1,
-          maxGuests: 20,
-        },
-        image: createdImages[1].id, // Reference to the second created image
-        inclusions: {
-          included: [
-            { item: 'Buggy rental and safety equipment' },
-            { item: 'Professional guide' },
-            { item: 'Visit to local Dominican house' },
-            { item: 'Coffee and cacao tasting' },
-            { item: 'Natural cenote swim' },
-            { item: 'Safety briefing and training' },
-          ],
-          notIncluded: [
-            { item: 'Hotel pickup and drop-off' },
-            { item: 'Lunch and beverages' },
-            { item: 'Personal insurance' },
-            { item: 'Photos and videos' },
-          ],
-        },
-        requirements: {
-          ageRestriction: {
-            minAge: 18,
-            maxAge: 65,
-          },
-          fitnessLevel: 'moderate',
-          whatToBring: [
-            { item: 'Comfortable clothes that can get dirty' },
-            { item: 'Closed-toe shoes (mandatory)' },
-            { item: 'Swimwear for cenote' },
-            { item: 'Change of clothes' },
-            { item: "Valid driver's license" },
-          ],
-        },
-        bookingSettings: {
-          advanceBooking: 48,
-          cancellationPolicy: '48h-free',
-        },
-        featured: false,
-        popular: true,
+        image: createdImages[1].id,
         active: true,
-        publishedAt: new Date().toISOString(),
       },
       {
         title: 'Catamaran Sunset Cruise',
         slug: 'catamaran-sunset-cruise',
         location: 'Cap Cana',
-        category: 'water-sports',
+        category: 'water-sports' as const,
         price: 75,
-        priceInfo: {
-          currency: 'USD',
-          childDiscount: 40,
-          groupDiscount: 12,
-        },
-        shortDescription:
-          'Sail into the sunset aboard a luxury catamaran with open bar and snorkeling opportunities.',
         description: {
           root: {
             type: 'root',
@@ -293,14 +166,14 @@ export async function seed() {
                 children: [
                   {
                     type: 'text',
-                    text: 'Experience the magic of a Caribbean sunset aboard our luxury catamaran. This romantic and relaxing cruise includes snorkeling at coral reefs, swimming in crystal-clear waters, and enjoying premium drinks while watching the sun set over the horizon. Perfect for couples, families, and anyone looking to unwind in paradise.',
+                    text: 'Experience the magic of a Caribbean sunset aboard our luxury catamaran with snorkeling and premium drinks.',
                   },
                 ],
                 version: 1,
               },
             ],
-            direction: 'ltr',
-            format: '',
+            direction: 'ltr' as const,
+            format: 'left' as const,
             indent: 0,
             version: 1,
           },
@@ -310,62 +183,16 @@ export async function seed() {
           minutes: 30,
           display: 'Afternoon (3.5 hours)',
         },
-        schedule: {
-          departureTime: '02:30 PM',
-          returnTime: '06:00 PM',
-          daysAvailable: ['monday', 'wednesday', 'friday', 'sunday'],
-        },
         languages: [
-          { language: 'english', level: 'fluent' },
-          { language: 'spanish', level: 'native' },
-          { language: 'french', level: 'conversational' },
+          { language: 'english' as const, level: 'fluent' as const },
+          { language: 'spanish' as const, level: 'native' as const },
         ],
         transportation: {
-          pickup: 'included',
+          pickup: 'included' as const,
           pickupNote: 'Marina pickup included, hotel transportation available',
         },
-        capacity: {
-          minGuests: 6,
-          maxGuests: 40,
-        },
-        image: createdImages[2].id, // Reference to the third created image
-        inclusions: {
-          included: [
-            { item: 'Luxury catamaran cruise' },
-            { item: 'Open bar with premium drinks' },
-            { item: 'Snorkeling equipment' },
-            { item: 'Professional crew and guide' },
-            { item: 'Light snacks and fruit' },
-            { item: 'Music and entertainment' },
-          ],
-          notIncluded: [
-            { item: 'Dinner' },
-            { item: 'Underwater camera rental' },
-            { item: 'Towels (bring your own)' },
-          ],
-        },
-        requirements: {
-          ageRestriction: {
-            minAge: 8,
-            maxAge: 80,
-          },
-          fitnessLevel: 'easy',
-          whatToBring: [
-            { item: 'Swimwear' },
-            { item: 'Towel' },
-            { item: 'Sunscreen' },
-            { item: 'Hat and sunglasses' },
-            { item: 'Waterproof camera' },
-          ],
-        },
-        bookingSettings: {
-          advanceBooking: 24,
-          cancellationPolicy: '24h-free',
-        },
-        featured: true,
-        popular: false,
+        image: createdImages[2].id,
         active: true,
-        publishedAt: new Date().toISOString(),
       },
     ]
 
