@@ -37,6 +37,7 @@ async function getExcursions() {
 
 export default async function Home() {
   // const excursions = (await getExcursions()) as Excursion[]
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />

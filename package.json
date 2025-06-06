@@ -15,6 +15,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@payloadcms/db-postgres": "3.33.0",
     "@payloadcms/next": "3.33.0",
     "@payloadcms/payload-cloud": "3.33.0",
@@ -28,8 +29,10 @@
     "payload": "3.33.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.57.0",
     "resend": "^4.5.1",
-    "sharp": "0.32.6"
+    "sharp": "0.32.6",
+    "zod": "^3.25.51"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

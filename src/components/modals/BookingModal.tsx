@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import Modal from './Modal'
 import Image from 'next/image'
+import BookingSuccess from '../BookingSuccess'
 
 interface BookingModalProps {
   isOpen: boolean
@@ -46,6 +47,7 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [emailSent, setEmailSent] = useState(true)
 
   // Get excursion image
   const excursionImage =
@@ -144,19 +146,43 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
         }),
       })
 
+      const result = await response.json()
+
       if (!response.ok) {
-        throw new Error('Failed to submit booking')
+        // Handle specific error types
+        if (result.error?.type === 'VALIDATION_ERROR') {
+          setSubmitError('Please check your information and try again.')
+        } else if (result.error?.type === 'EXCURSION_NOT_FOUND') {
+          setSubmitError('This excursion is no longer available.')
+        } else if (result.error?.type === 'EXCURSION_INACTIVE') {
+          setSubmitError('This excursion is not currently available for booking.')
+        } else {
+          setSubmitError(result.error?.message || 'Failed to submit booking. Please try again.')
+        }
+        return
       }
 
-      setSubmitSuccess(true)
+      if (result.success) {
+        setSubmitSuccess(true)
+        setEmailSent(result.emailSent)
 
-      // Call onSuccess after a delay to show success message
-      setTimeout(() => {
-        onSuccess()
-      }, 2000)
+        // Log email status for debugging
+        if (!result.emailSent) {
+          console.warn('Booking created but email failed:', result.emailError)
+        }
+
+        // Call onSuccess after a delay to show success message
+        if (onSuccess) {
+          setTimeout(() => {
+            onSuccess()
+          }, 3000) // Give more time to read the success message
+        }
+      } else {
+        setSubmitError(result.error?.message || 'Failed to submit booking. Please try again.')
+      }
     } catch (error) {
       console.error('Error submitting booking:', error)
-      setSubmitError(t('submitError'))
+      setSubmitError('Network error. Please check your connection and try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -198,20 +224,12 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={modalTitle} size="md">
       {submitSuccess ? (
-        <div className="p-6 text-center">
-          <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-5">
-            <BadgeCheck size={40} className="text-green-600" />
-          </div>
-          <h3 className="text-xl font-medium text-gray-900 mb-3">{t('success')}</h3>
-          <p className="text-gray-600 mb-8">{t('successMessage')}</p>
-          <button
-            type="button"
-            className="inline-flex justify-center py-3 px-6 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
-            onClick={onClose}
-          >
-            {t('close')}
-          </button>
-        </div>
+        <BookingSuccess
+          excursion={excursion}
+          bookingData={formData}
+          emailSent={emailSent}
+          onClose={onClose}
+        />
       ) : (
         <div className="p-6">
           {/* Excursion summary */}

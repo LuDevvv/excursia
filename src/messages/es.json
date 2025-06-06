@@ -1,14 +1,9 @@
 {
   "navbar": {
-    "thePark": "El Parque",
-    "attractions": "Atracciones",
-    "planYourVisit": "Planifica Tu Visita",
-    "tickets": "Boletos",
-    "hours": "Horarios",
-    "directions": "Cómo Llegar",
-    "contact": "Contacto",
-    "language": "Idioma",
-    "bookNow": "Reservar"
+    "excursions": "Excursiones",
+    "whyChooseUs": "¿Por Qué Elegirnos?",
+    "faq": "FAQ",
+    "language": "Idioma"
   },
   "header": {
     "title": "Una Leyenda Que Puedes Vivir",

@@ -1,14 +1,9 @@
 {
   "navbar": {
-    "thePark": "The Park",
-    "attractions": "Attractions",
-    "planYourVisit": "Plan Your Visit",
-    "tickets": "Tickets",
-    "hours": "Hours",
-    "directions": "Directions",
-    "contact": "Contact",
-    "language": "Language",
-    "bookNow": "Book Now"
+    "excursions": "Excursions",
+    "whyChooseUs": "Why Choose Us",
+    "faq": "FAQ",
+    "language": "Language"
   },
   "header": {
     "title": "A Legend You Can Live",
