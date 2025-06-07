@@ -1,5 +1,4 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -36,12 +35,16 @@ export default buildConfig({
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
   sharp,
-  plugins: [payloadCloudPlugin()],
+  plugins: [],
   cors: [
+    'http://localhost:3000',
+    'https://localhost:3000',
     process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
     process.env.PAYLOAD_PUBLIC_SITE_URL || '',
   ].filter(Boolean),
   csrf: [
+    'http://localhost:3000',
+    'https://localhost:3000',
     process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
     process.env.PAYLOAD_PUBLIC_SITE_URL || '',
   ].filter(Boolean),
@@ -50,4 +53,6 @@ export default buildConfig({
     defaultLocale: 'en',
     fallback: true,
   },
+  // Configuración adicional para desarrollo
+  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
 })
