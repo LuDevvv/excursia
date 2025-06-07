@@ -17,21 +17,8 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
-    importMap: {
-      baseDir: path.resolve(dirname),
-    },
     meta: {
       titleSuffix: '- Media Life CMS',
-    },
-    components: {
-      graphics: {
-        Logo: {
-          path: '@/components/admin/Logo',
-        },
-        Icon: {
-          path: '@/components/admin/Icon',
-        },
-      },
     },
   },
   collections: [Users, Media, Excursions, Bookings],
