@@ -11,7 +11,6 @@ services:
     working_dir: /home/node/app/
     command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
     depends_on:
-      # - mongo
       - postgres
     env_file:
       - .env
@@ -26,7 +25,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=payloadapp
+      - POSTGRES_DB=medialife
 
 volumes:
   data:

@@ -21,7 +21,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     meta: {
-      titleSuffix: '- Excursia CMS',
+      titleSuffix: '- Media Life CMS',
     },
     components: {
       graphics: {

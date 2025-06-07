@@ -1,6 +1,6 @@
-# Excursia - Plataforma de Reservas de Excursiones
+# Media Life - Plataforma de Reservas de Excursiones
 
-Excursia es una aplicación web de página única (SPA) para la reserva de excursiones turísticas en República Dominicana, que integra un CMS para la gestión de contenido y una experiencia de usuario moderna y atractiva.
+Media Life es una aplicación web de página única (SPA) para la reserva de excursiones turísticas en República Dominicana, que integra un CMS para la gestión de contenido y una experiencia de usuario moderna y atractiva.
 
 ## Características
 
@@ -23,7 +23,7 @@ Excursia es una aplicación web de página única (SPA) para la reserva de excur
 ## Estructura del Proyecto
 
 ```
-excursia/
+medialife/
 ├── src/
 │   ├── app/                    # Next.js App Router
 │   │   ├── (frontend)/         # Frontend (landing page)
@@ -58,8 +58,8 @@ excursia/
 1. Clona el repositorio:
 
    ```bash
-   git clone https://github.com/tu-username/excursia.git
-   cd excursia
+   git clone https://github.com/tu-username/medialife.git
+   cd medialife
    ```
 
 2. Instala las dependencias:

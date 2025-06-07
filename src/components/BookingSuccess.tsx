@@ -163,8 +163,8 @@ export default function BookingSuccess({
           </div>
           <div className="flex items-center text-blue-800 text-sm">
             <Mail size={14} className="mr-2" />
-            <a href="mailto:info@excursia.com" className="hover:underline">
-              info@excursia.com
+            <a href="mailto:info@medialife.com" className="hover:underline">
+              info@medialifee.com
             </a>
           </div>
         </div>

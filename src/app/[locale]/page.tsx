@@ -86,7 +86,7 @@ export default async function Home() {
         <Navbar />
         <main className="w-full flex-grow flex items-center justify-center">
           <div className="text-center max-w-md mx-auto p-8">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Welcome to Excursia CMS</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Welcome to Media Life CMS</h1>
             <p className="text-gray-600 mb-6">
               No excursions have been created yet. Please access the admin panel to add your first
               excursion.

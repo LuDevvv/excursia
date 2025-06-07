@@ -2,8 +2,8 @@ import { Resend } from 'resend'
 import { Booking, Excursion } from '@/payload-types'
 
 const BUSINESS_INFO = {
-  name: 'Excursia',
-  email: process.env.BUSINESS_EMAIL || 'info@excursia.com',
+  name: 'Media Life',
+  email: process.env.BUSINESS_EMAIL || 'info@medialife.com',
   phone: '+1 (809) 555-1234',
   address: '123 Beach Road, Punta Cana, Dominican Republic',
 }
@@ -23,7 +23,7 @@ export class BookingEmailService {
     try {
       // Send confirmation email to customer
       const customerResult = await this.resend.emails.send({
-        from: process.env.EMAIL_FROM || 'booking@excursia.com',
+        from: process.env.EMAIL_FROM || 'booking@medialifee.com',
         to: booking.email,
         replyTo: BUSINESS_INFO.email,
         subject: `Booking Confirmation: ${excursion.title}`,
@@ -32,7 +32,7 @@ export class BookingEmailService {
 
       // Send notification email to business
       const businessResult = await this.resend.emails.send({
-        from: process.env.EMAIL_FROM || 'booking@excursia.com',
+        from: process.env.EMAIL_FROM || 'booking@medialifee.com',
         to: BUSINESS_INFO.email,
         replyTo: booking.email,
         subject: `New Booking: ${excursion.title} - ${booking.fullName}`,
@@ -82,7 +82,7 @@ export class BookingEmailService {
               <tr>
                 <td style="background: linear-gradient(135deg, #0a85d1 0%, #fdaa33 100%);padding:30px 20px;text-align:center;color:#ffffff;">
                   <h1 style="margin:0;font-size:28px;font-weight:bold;">Booking Confirmed!</h1>
-                  <p style="margin:10px 0 0;font-size:16px;opacity:0.9;">Thank you for choosing Excursia</p>
+                  <p style="margin:10px 0 0;font-size:16px;opacity:0.9;">Thank you for choosing Media Life</p>
                 </td>
               </tr>
 
@@ -214,7 +214,7 @@ export class BookingEmailService {
               <!-- Footer -->
               <tr>
                 <td style="background-color:#0a85d1;padding:20px;text-align:center;color:#ffffff;">
-                  <p style="margin:0;font-size:16px;font-weight:bold;">Thank you for choosing Excursia!</p>
+                  <p style="margin:0;font-size:16px;font-weight:bold;">Thank you for choosing Media Life!</p>
                   <p style="margin:5px 0 0;font-size:14px;opacity:0.9;">We look forward to making your Dominican Republic experience unforgettable.</p>
                   <p style="margin:15px 0 0;font-size:12px;opacity:0.8;">
                     Booking sent: ${new Date().toLocaleString('en-US', {

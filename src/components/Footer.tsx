@@ -72,8 +72,8 @@ export default function Footer({ popularExcursions = [] }: FooterProps) {
     },
     {
       icon: <Mail size={18} />,
-      content: 'info@excursia.com',
-      href: 'mailto:info@excursia.com',
+      content: 'info@medialife.com',
+      href: 'mailto:info@medialifee.com',
     },
     {
       icon: <Clock size={18} />,
@@ -202,7 +202,7 @@ export default function Footer({ popularExcursions = [] }: FooterProps) {
         <div className="border-t border-gray-800 pt-8 mt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-center md:text-left mb-4 md:mb-0 flex items-center text-sm">
-              &copy; {new Date().getFullYear()} Excursia. {t('allRightsReserved')}
+              &copy; {new Date().getFullYear()} Media Life. {t('allRightsReserved')}
               <span className="mx-1 text-gray-600">•</span>
               <span className="flex items-center">
                 Made with <Heart className="mx-1 h-3 w-3 text-red-500" /> in Dominican Republic
