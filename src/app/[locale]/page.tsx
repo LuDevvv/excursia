@@ -7,7 +7,6 @@ import WhyChooseUsSection from '@/components/sections/WhyChooseUsSection'
 import FAQSection from '@/components/sections/FAQSection'
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
-import { notFound } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 

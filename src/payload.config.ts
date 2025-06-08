@@ -8,7 +8,6 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Excursions } from './collections/Excursions'
-import { Bookings } from './collections/Bookings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -16,11 +15,14 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+    meta: {
+      titleSuffix: '- Media Life CMS',
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Excursions, Bookings],
+  collections: [Users, Media, Excursions],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

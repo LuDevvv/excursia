@@ -24,18 +24,12 @@ const nextConfig = {
   reactStrictMode: true,
   distDir: '.next',
   async redirects() {
-    return [
-      {
-        source: '/admin',
-        destination: '/admin/login',
-        permanent: true,
-      },
-    ]
+    return []
   },
   webpack(config) {
     return config
   },
-  turbopack: process.env.NODE_ENV === 'development',
+  turbopack: true,
 }
 
 export default withNextIntl(withPayload(nextConfig, { devBundleServerPackages: false }))

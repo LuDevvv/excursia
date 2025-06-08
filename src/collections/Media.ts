@@ -4,9 +4,8 @@ export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
     useAsTitle: 'alt',
-    group: 'Media',
-    description: 'Manage images and media files',
-    defaultColumns: ['alt', 'filename', 'mimeType', 'filesize', 'updatedAt'],
+    description: 'Manage images for excursions',
+    defaultColumns: ['alt', 'filename', 'updatedAt'],
   },
   access: {
     read: () => true,
@@ -16,7 +15,6 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: '../public/media',
-
     imageSizes: [
       {
         name: 'thumbnail',
@@ -25,9 +23,7 @@ export const Media: CollectionConfig = {
         crop: 'center',
         formatOptions: {
           format: 'webp',
-          options: {
-            quality: 80,
-          },
+          options: { quality: 80 },
         },
       },
       {
@@ -37,9 +33,7 @@ export const Media: CollectionConfig = {
         crop: 'center',
         formatOptions: {
           format: 'webp',
-          options: {
-            quality: 85,
-          },
+          options: { quality: 85 },
         },
       },
       {
@@ -49,27 +43,12 @@ export const Media: CollectionConfig = {
         crop: 'center',
         formatOptions: {
           format: 'webp',
-          options: {
-            quality: 90,
-          },
-        },
-      },
-      {
-        name: 'gallery',
-        width: 800,
-        height: 600,
-        crop: 'center',
-        formatOptions: {
-          format: 'webp',
-          options: {
-            quality: 85,
-          },
+          options: { quality: 90 },
         },
       },
     ],
-
     adminThumbnail: 'thumbnail',
-    mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'],
+    mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
   },
   hooks: {
     beforeChange: [
@@ -91,10 +70,10 @@ export const Media: CollectionConfig = {
       required: true,
       localized: true,
       admin: {
-        placeholder: 'Describe this image for accessibility...',
-        description: 'Alt text is important for accessibility and SEO',
+        placeholder: 'Describe this image...',
+        description: 'Important for accessibility and SEO',
       },
-      validate: (value: any, { data }: any) => {
+      validate: (value: unknown) => {
         if (!value || typeof value !== 'string' || value.length < 3) {
           return 'Alt text must be at least 3 characters long'
         }
@@ -103,90 +82,6 @@ export const Media: CollectionConfig = {
         }
         return true
       },
-    },
-    {
-      name: 'caption',
-      type: 'text',
-      localized: true,
-      admin: {
-        placeholder: 'Optional caption for the image...',
-        description: 'Caption text that may be displayed below the image',
-      },
-    },
-    {
-      name: 'category',
-      type: 'select',
-      options: [
-        { label: 'Excursion Photos', value: 'excursion' },
-        { label: 'Location Images', value: 'location' },
-        { label: 'Activity Photos', value: 'activity' },
-        { label: 'Hero Images', value: 'hero' },
-        { label: 'Gallery', value: 'gallery' },
-        { label: 'Icons & Graphics', value: 'graphics' },
-        { label: 'Other', value: 'other' },
-      ],
-      defaultValue: 'excursion',
-      admin: {
-        description: 'Categorize this media for better organization',
-      },
-    },
-    {
-      name: 'tags',
-      type: 'text',
-      admin: {
-        placeholder: 'beach, adventure, snorkeling (comma-separated)',
-        description: 'Add tags to help organize and search media files',
-      },
-    },
-    {
-      name: 'photographer',
-      type: 'text',
-      admin: {
-        placeholder: 'Photographer or source credit',
-        description: 'Attribution for the image source',
-      },
-    },
-    {
-      name: 'location',
-      type: 'text',
-      admin: {
-        placeholder: 'Where was this photo taken?',
-        description: 'Geographic location of the image',
-      },
-    },
-    {
-      name: 'dateCreated',
-      type: 'date',
-      admin: {
-        description: 'When was this photo taken?',
-        date: {
-          pickerAppearance: 'dayOnly',
-        },
-      },
-    },
-    {
-      name: 'seo',
-      type: 'group',
-      label: 'SEO Settings',
-      fields: [
-        {
-          name: 'title',
-          type: 'text',
-          localized: true,
-          admin: {
-            placeholder: 'SEO title for this image',
-          },
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          maxLength: 160,
-          localized: true,
-          admin: {
-            placeholder: 'SEO description for this image',
-          },
-        },
-      ],
     },
   ],
 }
