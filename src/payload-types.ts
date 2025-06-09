@@ -197,6 +197,10 @@ export interface Excursion {
    */
   price: number;
   /**
+   * Main featured image
+   */
+  image: number | Media;
+  /**
    * Detailed description of the excursion
    */
   description: {
@@ -218,11 +222,28 @@ export interface Excursion {
    * Brief description for cards (max 200 chars)
    */
   shortDescription?: string | null;
+  /**
+   * How long the excursion lasts
+   */
   duration?: string | null;
   /**
-   * Main featured image
+   * Languages available for this excursion
    */
-  image: number | Media;
+  languages?:
+    | {
+        language: 'spanish' | 'english' | 'french' | 'german' | 'italian' | 'portuguese' | 'russian';
+        level?: ('fluent' | 'basic' | 'intermediate') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Transportation and pickup information
+   */
+  pickup: {
+    included: 'included' | 'extra-cost' | 'meet-location';
+    pickupNote?: string | null;
+    meetingPoint?: string | null;
+  };
   /**
    * Additional images (optional)
    */
@@ -233,10 +254,6 @@ export interface Excursion {
         id?: string | null;
       }[]
     | null;
-  /**
-   * Show on homepage
-   */
-  featured?: boolean | null;
   /**
    * Available for booking
    */
@@ -381,10 +398,24 @@ export interface ExcursionsSelect<T extends boolean = true> {
   title?: T;
   location?: T;
   price?: T;
+  image?: T;
   description?: T;
   shortDescription?: T;
   duration?: T;
-  image?: T;
+  languages?:
+    | T
+    | {
+        language?: T;
+        level?: T;
+        id?: T;
+      };
+  pickup?:
+    | T
+    | {
+        included?: T;
+        pickupNote?: T;
+        meetingPoint?: T;
+      };
   gallery?:
     | T
     | {
@@ -392,7 +423,6 @@ export interface ExcursionsSelect<T extends boolean = true> {
         caption?: T;
         id?: T;
       };
-  featured?: T;
   active?: T;
   publishedAt?: T;
   updatedAt?: T;

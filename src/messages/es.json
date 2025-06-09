@@ -41,10 +41,31 @@
   },
   "excursion": {
     "price": "Precio",
+    "duration": "Duración",
+    "location": "Ubicación",
+    "languagesLabel": "Idiomas",
+    "pickup": "Transporte",
+    "pickupIncluded": "Recogida en hotel incluida",
+    "pickupExtraCost": "Recogida en hotel disponible (costo adicional)",
+    "pickupMeetLocation": "Encuentro en ubicación designada",
     "description": "Descripción",
     "noDescription": "No hay descripción disponible para esta excursión.",
     "gallery": "Galería",
-    "bookNow": "Reservar Ahora"
+    "bookNow": "Reservar Ahora",
+    "languages": {
+      "spanish": "Español",
+      "english": "Inglés",
+      "french": "Francés",
+      "german": "Alemán",
+      "italian": "Italiano",
+      "portuguese": "Portugués",
+      "russian": "Ruso"
+    },
+    "languageLevels": {
+      "fluent": "Fluido",
+      "basic": "Básico",
+      "intermediate": "Intermedio"
+    }
   },
   "booking": {
     "bookTitle": "Reservar",

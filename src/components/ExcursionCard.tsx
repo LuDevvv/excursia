@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { Excursion } from '@/payload-types'
-import { Clock, MapPin, Languages, Users, Star } from 'lucide-react'
+import { Clock, MapPin, Languages, Car } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface ExcursionCardProps {
@@ -12,8 +12,9 @@ interface ExcursionCardProps {
 
 export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps) {
   const t = useTranslations('homepage')
+  const tExcursion = useTranslations('excursion')
 
-  // Extract image URL - using existing 'image' field
+  // Extract image URL
   const getImageUrl = () => {
     if (typeof excursion.image === 'object' && excursion.image?.url) {
       return excursion.image.url
@@ -29,44 +30,20 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
     return excursion.title
   }
 
-  // Format duration - checking for both string and object types
-  const formatDuration = () => {
-    // If duration is a string (legacy)
-    if (typeof excursion.duration === 'string') {
-      return excursion.duration
-    }
-
-    // If duration is an object with new structure (if types are generated)
-    if (excursion.duration && typeof excursion.duration === 'object') {
-      const durationObj = excursion.duration as any
-      if (durationObj.display) {
-        return durationObj.display
-      }
-      if (durationObj.hours || durationObj.minutes) {
-        const hours = durationObj.hours || 0
-        const minutes = durationObj.minutes || 0
-        if (hours > 0 && minutes > 0) {
-          return `${hours}h ${minutes}m`
-        } else if (hours > 0) {
-          return `${hours} hour${hours > 1 ? 's' : ''}`
-        } else if (minutes > 0) {
-          return `${minutes} min`
-        }
-      }
-    }
-
-    return null
-  }
-
-  // Format languages
+  // Format languages with translations
   const formatLanguages = () => {
     if (excursion.languages && excursion.languages.length > 0) {
       const languageNames = excursion.languages
         .map((lang) => {
           if (typeof lang.language === 'string') {
-            return lang.language.charAt(0).toUpperCase() + lang.language.slice(1)
+            const langName = tExcursion(`languages.${lang.language}`)
+            const level =
+              lang.level && lang.level !== 'fluent'
+                ? ` (${tExcursion(`languageLevels.${lang.level}`)})`
+                : ''
+            return langName + level
           }
-          return lang.language || ''
+          return ''
         })
         .filter(Boolean)
 
@@ -75,28 +52,44 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
       } else if (languageNames.length === 2) {
         return languageNames.join(' & ')
       } else if (languageNames.length > 2) {
-        return `${languageNames.length} languages`
+        return `${languageNames.length} ${tExcursion('languages')}`
       }
     }
     return null
   }
 
-  // Get capacity info - checking if field exists in types
-  const getCapacityInfo = () => {
-    // Check if capacity field exists (will be available after types are regenerated)
-    const capacity = (excursion as any).capacity
-    if (capacity?.maxGuests) {
-      return `Up to ${capacity.maxGuests} guests`
+  // Format pickup info with translations
+  const getPickupInfo = () => {
+    if (!excursion.pickup) return null
+
+    switch (excursion.pickup.included) {
+      case 'included':
+        return {
+          text: excursion.pickup.pickupNote || tExcursion('pickupIncluded'),
+          color: 'bg-green-100 text-green-800',
+          icon: '✅',
+        }
+      case 'extra-cost':
+        return {
+          text: excursion.pickup.pickupNote || tExcursion('pickupExtraCost'),
+          color: 'bg-yellow-100 text-yellow-800',
+          icon: '💰',
+        }
+      case 'meet-location':
+        return {
+          text: excursion.pickup.meetingPoint || tExcursion('pickupMeetLocation'),
+          color: 'bg-blue-100 text-blue-800',
+          icon: '📍',
+        }
+      default:
+        return null
     }
-    return null
   }
 
-  // Get short description - checking if field exists
+  // Get short description
   const getShortDescription = () => {
-    // Check if shortDescription field exists (will be available after types are regenerated)
-    const shortDescription = (excursion as any).shortDescription
-    if (shortDescription) {
-      return shortDescription
+    if (excursion.shortDescription) {
+      return excursion.shortDescription
     }
 
     // Try to extract from rich text description
@@ -125,26 +118,14 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
     return 'Discover an amazing experience in the Dominican Republic.'
   }
 
-  // Format price with currency - checking if priceInfo exists
-  const formatPrice = () => {
-    const priceInfo = (excursion as any).priceInfo
-    const currency = priceInfo?.currency || 'USD'
-    const symbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '$'
-    return `${symbol}${excursion.price}`
-  }
-
-  // Check if excursion is featured or popular
-  const isFeatured = (excursion as any).featured
-  const isPopular = (excursion as any).popular
-  const category = (excursion as any).category
-  const transportation = (excursion as any).transportation
+  // Format price
+  const formatPrice = () => `$${excursion.price}`
 
   const imageUrl = getImageUrl()
   const imageAlt = getImageAlt()
-  const duration = formatDuration()
   const languages = formatLanguages()
-  const capacity = getCapacityInfo()
   const description = getShortDescription()
+  const pickupInfo = getPickupInfo()
 
   return (
     <div
@@ -166,28 +147,6 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
         <div className="absolute top-3 right-3 bg-secondary text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-md">
           {formatPrice()}
         </div>
-
-        {/* Featured/Popular Badges */}
-        <div className="absolute top-3 left-3 space-y-1">
-          {isFeatured && (
-            <div className="bg-blue-600 text-white px-2 py-1 rounded-md text-xs font-medium shadow-md">
-              Featured
-            </div>
-          )}
-          {isPopular && (
-            <div className="bg-red-500 text-white px-2 py-1 rounded-md text-xs font-medium shadow-md flex items-center">
-              <Star size={12} className="mr-1" />
-              Popular
-            </div>
-          )}
-        </div>
-
-        {/* Category Badge */}
-        {category && (
-          <div className="absolute bottom-3 left-3 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">
-            {category.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
-          </div>
-        )}
       </div>
 
       {/* Content */}
@@ -205,10 +164,10 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
           </div>
 
           {/* Duration */}
-          {duration && (
+          {excursion.duration && (
             <div className="flex items-center text-gray-600">
               <Clock size={14} className="mr-1.5 text-primary flex-shrink-0" />
-              <span className="truncate">{duration}</span>
+              <span className="truncate">{excursion.duration}</span>
             </div>
           )}
 
@@ -219,37 +178,30 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
               <span className="truncate">{languages}</span>
             </div>
           )}
-
-          {/* Capacity */}
-          {capacity && (
-            <div className="flex items-center text-gray-600 col-span-2">
-              <Users size={14} className="mr-1.5 text-primary flex-shrink-0" />
-              <span className="truncate">{capacity}</span>
-            </div>
-          )}
         </div>
 
         {/* Description */}
         <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">{description}</p>
 
-        {/* Transportation Info */}
-        {transportation?.pickup && (
+        {/* Pickup Info */}
+        {pickupInfo && (
           <div className="mb-4">
             <span
-              className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                transportation.pickup === 'included'
-                  ? 'bg-green-100 text-green-800'
-                  : transportation.pickup === 'extra-cost'
-                    ? 'bg-yellow-100 text-yellow-800'
-                    : 'bg-blue-100 text-blue-800'
-              }`}
+              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${pickupInfo.color}`}
             >
-              {transportation.pickup === 'included'
-                ? 'Hotel pickup included'
-                : transportation.pickup === 'extra-cost'
-                  ? 'Hotel pickup available'
-                  : 'Meet at location'}
+              <span className="mr-1">{pickupInfo.icon}</span>
+              {pickupInfo.text}
             </span>
+          </div>
+        )}
+
+        {/* Features Row */}
+        {excursion.pickup?.included === 'included' && (
+          <div className="flex items-center mb-4 text-xs text-gray-500">
+            <div className="flex items-center">
+              <Car size={12} className="mr-1 text-green-600" />
+              <span>{tExcursion('pickup')}</span>
+            </div>
           </div>
         )}
 

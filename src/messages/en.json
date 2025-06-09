@@ -33,7 +33,7 @@
     "quickBookingText": "With just a few clicks, you can secure your spot on our excursions.",
     "guidedTours": "Guided Tours",
     "guidedToursText": "We have expert guides who will accompany you every step of the way.",
-    "bestPrice": "Mejores Precio",
+    "bestPrice": "Best Prices",
     "bestPriceText": "We believe exploring the world shouldn't be an unattainable luxury.",
     "secureBooking": "100% Secure Booking",
     "fiveStarExperiences": "5-Star Rated Experiences",
@@ -41,10 +41,31 @@
   },
   "excursion": {
     "price": "Price",
+    "duration": "Duration",
+    "location": "Location",
+    "languagesLabel": "Languages",
+    "pickup": "Transportation",
+    "pickupIncluded": "Hotel pickup included",
+    "pickupExtraCost": "Hotel pickup available (additional cost)",
+    "pickupMeetLocation": "Meet at designated location",
     "description": "Description",
     "noDescription": "No description available for this excursion.",
     "gallery": "Gallery",
-    "bookNow": "Book Now"
+    "bookNow": "Book Now",
+    "languages": {
+      "spanish": "Spanish",
+      "english": "English",
+      "french": "French",
+      "german": "German",
+      "italian": "Italian",
+      "portuguese": "Portuguese",
+      "russian": "Russian"
+    },
+    "languageLevels": {
+      "fluent": "Fluent",
+      "basic": "Basic",
+      "intermediate": "Intermediate"
+    }
   },
   "booking": {
     "bookTitle": "Book",

@@ -4,7 +4,7 @@ export const Excursions: CollectionConfig = {
   slug: 'excursions',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'location', 'price', 'featured', 'active', 'updatedAt'],
+    defaultColumns: ['title', 'location', 'price', 'active', 'updatedAt'],
     description: 'Manage tour excursions and activities',
     listSearchableFields: ['title', 'location'],
     pagination: {
@@ -59,6 +59,15 @@ export const Excursions: CollectionConfig = {
       },
     },
     {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+      admin: {
+        description: 'Main featured image',
+      },
+    },
+    {
       name: 'description',
       type: 'richText',
       required: true,
@@ -82,16 +91,79 @@ export const Excursions: CollectionConfig = {
       type: 'text',
       admin: {
         placeholder: 'e.g., Full Day (8 hours), Half Day (4 hours)',
+        description: 'How long the excursion lasts',
       },
     },
     {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
+      name: 'languages',
+      type: 'array',
       admin: {
-        description: 'Main featured image',
+        description: 'Languages available for this excursion',
       },
+      fields: [
+        {
+          name: 'language',
+          type: 'select',
+          required: true,
+          options: [
+            { label: 'Spanish', value: 'spanish' },
+            { label: 'English', value: 'english' },
+            { label: 'French', value: 'french' },
+            { label: 'German', value: 'german' },
+            { label: 'Italian', value: 'italian' },
+            { label: 'Portuguese', value: 'portuguese' },
+            { label: 'Russian', value: 'russian' },
+          ],
+        },
+        {
+          name: 'level',
+          type: 'select',
+          defaultValue: 'fluent',
+          options: [
+            { label: 'Fluent', value: 'fluent' },
+            { label: 'Basic', value: 'basic' },
+            { label: 'Intermediate', value: 'intermediate' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'pickup',
+      type: 'group',
+      admin: {
+        description: 'Transportation and pickup information',
+      },
+      fields: [
+        {
+          name: 'included',
+          type: 'select',
+          required: true,
+          defaultValue: 'included',
+          options: [
+            { label: 'Hotel pickup included', value: 'included' },
+            { label: 'Hotel pickup available (extra cost)', value: 'extra-cost' },
+            { label: 'Meet at designated location', value: 'meet-location' },
+          ],
+        },
+        {
+          name: 'pickupNote',
+          type: 'text',
+          localized: true,
+          admin: {
+            placeholder: 'e.g., Pickup from most hotels in Punta Cana area',
+            condition: (data, siblingData) => siblingData?.included !== 'meet-location',
+          },
+        },
+        {
+          name: 'meetingPoint',
+          type: 'text',
+          localized: true,
+          admin: {
+            placeholder: 'e.g., Marina Cap Cana, Dock 3',
+            condition: (data, siblingData) => siblingData?.included === 'meet-location',
+          },
+        },
+      ],
     },
     {
       name: 'gallery',
@@ -116,17 +188,6 @@ export const Excursions: CollectionConfig = {
           },
         },
       ],
-    },
-
-    // Simple Settings
-    {
-      name: 'featured',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
-        position: 'sidebar',
-        description: 'Show on homepage',
-      },
     },
     {
       name: 'active',

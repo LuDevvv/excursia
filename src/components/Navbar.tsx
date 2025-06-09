@@ -47,17 +47,6 @@ export default function Navbar() {
     { href: '#faq', translationKey: 'faq', icon: <HelpCircle size={20} /> },
   ]
 
-  const handleNavClick = (href: string) => {
-    setIsOpen(false)
-    // Small delay to allow menu to close before scrolling
-    setTimeout(() => {
-      const element = document.querySelector(href)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-      }
-    }, 150)
-  }
-
   return (
     <>
       <header

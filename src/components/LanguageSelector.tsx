@@ -5,6 +5,7 @@ import { Globe, ChevronDown } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 interface LanguageSelectorProps {
   isMobile?: boolean
@@ -30,35 +31,52 @@ export default function LanguageSelector({ isMobile = false }: LanguageSelectorP
 
   if (isMobile) {
     return (
-      <div className="mt-5 pt-4 border-t border-gray-100">
-        <p className="text-gray-600 font-medium mb-3 px-1 uppercase text-sm">IDIOMA:</p>
-        <div className="grid grid-cols-2 gap-3">
+      <section className="mt-6 pt-5 border-t border-gray-200">
+        <div className="flex items-center gap-2 mb-4 px-2 text-gray-700 uppercase text-sm font-semibold">
+          <Globe className="w-4 h-4" />
+          <p>{t('language')}</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 px-2">
           <Link
             href={pathname}
             locale="en"
-            className={`flex items-center justify-center gap-2 py-3 rounded transition-all duration-200 ${
+            className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm transition-all duration-200 ${
               locale === 'en'
-                ? 'bg-primary text-white font-medium'
+                ? 'bg-primary text-white font-semibold'
                 : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <img src="/images/flags/en.svg" alt="English" className="w-5 h-5" />
+            <Image
+              src="/images/flags/en.svg"
+              alt="English"
+              width={20}
+              height={20}
+              className="w-5 h-5"
+            />
             <span>English</span>
           </Link>
+
           <Link
             href={pathname}
             locale="es"
-            className={`flex items-center justify-center gap-2 py-3 rounded transition-all duration-200 ${
+            className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm transition-all duration-200 ${
               locale === 'es'
-                ? 'bg-primary text-white font-medium'
+                ? 'bg-primary text-white font-semibold'
                 : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <img src="/images/flags/es.svg" alt="Español" className="w-5 h-5" />
+            <Image
+              src="/images/flags/es.svg"
+              alt="Español"
+              width={20}
+              height={20}
+              className="w-5 h-5"
+            />
             <span>Español</span>
           </Link>
         </div>
-      </div>
+      </section>
     )
   }
 
@@ -73,9 +91,21 @@ export default function LanguageSelector({ isMobile = false }: LanguageSelectorP
         aria-haspopup="true"
       >
         {locale === 'en' ? (
-          <img src="/images/flags/en.svg" alt="English" className="w-6 h-6" />
+          <Image
+            src="/images/flags/en.svg"
+            alt="English"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
         ) : (
-          <img src="/images/flags/es.svg" alt="Español" className="w-6 h-6" />
+          <Image
+            src="/images/flags/es.svg"
+            alt="Español"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
         )}
         <ChevronDown
           size={16}
@@ -100,7 +130,13 @@ export default function LanguageSelector({ isMobile = false }: LanguageSelectorP
               }`}
               onClick={() => setIsOpen(false)}
             >
-              <img src="/images/flags/en.svg" alt="English" className="w-5 h-5 mr-2" />
+              <Image
+                src="/images/flags/en.svg"
+                alt="English"
+                width={20}
+                height={20}
+                className="w-5 h-5 mr-2"
+              />
               English
             </Link>
             <Link
@@ -111,7 +147,13 @@ export default function LanguageSelector({ isMobile = false }: LanguageSelectorP
               }`}
               onClick={() => setIsOpen(false)}
             >
-              <img src="/images/flags/es.svg" alt="Español" className="w-5 h-5 mr-2" />
+              <Image
+                src="/images/flags/es.svg"
+                alt="Español"
+                width={20}
+                height={20}
+                className="w-5 h-5 mr-2"
+              />
               Español
             </Link>
           </motion.div>
