@@ -28,12 +28,12 @@ export async function POST(req: Request) {
 
     const bookingData = validationResult.data
 
-    // Initialize Payload
+    // Initialize Payload to get excursion details
     const payload = await getPayload({
       config: configPromise,
     })
 
-    // Get excursion details first to validate it exists
+    // Get excursion details to validate it exists and is active
     let excursion: Excursion
     try {
       excursion = (await payload.findByID({
@@ -68,40 +68,51 @@ export async function POST(req: Request) {
       )
     }
 
-    // Create booking in database
-    const booking = await payload.create({
-      collection: 'bookings',
-      data: bookingData,
+    console.log('✅ Booking data validated successfully:', {
+      customer: bookingData.fullName,
+      email: bookingData.email,
+      excursion: excursion.title,
+      date: bookingData.arrivalDate,
+      time: bookingData.arrivalTime,
     })
 
-    console.log('✅ Booking created successfully:', booking.id)
-
-    // Send emails
-    const emailResult = await bookingEmailService.sendBookingConfirmation(booking, excursion)
+    // Send confirmation emails
+    const emailResult = await bookingEmailService.sendBookingConfirmation(bookingData, excursion)
 
     if (!emailResult.success) {
-      console.warn('⚠️ Email sending failed, but booking was created:', emailResult.error)
-      // Don't fail the API call if email fails - booking is still valid
-    } else {
-      console.log('✅ Emails sent successfully:', {
-        customerEmailId: emailResult.customerEmailId,
-        businessEmailId: emailResult.businessEmailId,
-      })
+      console.warn('⚠️ Email sending failed:', emailResult.error)
+
+      // Return success anyway since the booking request is valid
+      // The user will be notified that emails might be delayed
+      return NextResponse.json(
+        {
+          success: true,
+          emailSent: false,
+          emailError: emailResult.error?.message,
+          message: 'Booking confirmed! Email confirmation may be delayed.',
+        },
+        { status: 200 },
+      )
     }
+
+    console.log('✅ Emails sent successfully:', {
+      customerEmailId: emailResult.customerEmailId,
+      businessEmailId: emailResult.businessEmailId,
+    })
 
     return NextResponse.json(
       {
         success: true,
-        booking,
-        emailSent: emailResult.success,
-        emailError: emailResult.success ? undefined : emailResult.error,
+        emailSent: true,
+        message: 'Booking confirmed successfully!',
       },
-      { status: 201 },
+      { status: 200 },
     )
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('❌ Critical error in booking API:', {
-      message: error.message,
-      stack: error.stack,
+      message: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
       timestamp: new Date().toISOString(),
     })
 
@@ -109,9 +120,9 @@ export async function POST(req: Request) {
       {
         success: false,
         error: {
-          message: 'Failed to create booking',
+          message: 'Failed to process booking request',
           type: 'INTERNAL_ERROR',
-          details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+          details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
         },
       },
       { status: 500 },

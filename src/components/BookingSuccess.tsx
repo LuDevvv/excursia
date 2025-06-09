@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { BadgeCheck, Mail, Phone, Calendar, MapPin, Clock } from 'lucide-react'
+import { BadgeCheck, Mail, Phone, MapPin } from 'lucide-react'
 import { Excursion } from '@/payload-types'
 import Image from 'next/image'
 
@@ -138,7 +138,7 @@ export default function BookingSuccess({
         <ul className="space-y-2 text-sm text-gray-600">
           <li className="flex items-start">
             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-            <span>We'll contact you within 2 hours to confirm details</span>
+            <span>We&apos;ll contact you within 2 hours to confirm details</span>
           </li>
           <li className="flex items-start">
             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>

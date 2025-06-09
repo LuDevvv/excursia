@@ -1,25 +1,27 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Excursion } from '@/payload-types'
 import {
-  Loader2,
-  Check,
   User,
   Mail,
   Phone,
   Users,
-  Calendar,
-  Clock,
   MessageSquare,
   ArrowRight,
   ArrowLeft,
-  BadgeCheck,
+  Check,
+  Loader2,
+  AlertTriangle,
 } from 'lucide-react'
 import Modal from './Modal'
 import Image from 'next/image'
 import BookingSuccess from '../BookingSuccess'
+import CalendarInput from '../CalendarInput'
+import TimePicker from '../TimePicker'
+import { ClientBookingSchema } from '@/lib/types/booking'
+import { z } from 'zod'
 
 interface BookingModalProps {
   isOpen: boolean
@@ -28,16 +30,28 @@ interface BookingModalProps {
   onSuccess: () => void
 }
 
+type FormData = {
+  fullName: string
+  email: string
+  phone: string
+  adults: number
+  children: number
+  arrivalDate: Date | null
+  arrivalTime: string
+  message: string
+}
+
 export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: BookingModalProps) {
   const t = useTranslations('booking')
+  const locale = useLocale()
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
     phone: '',
     adults: 1,
     children: 0,
-    arrivalDate: '',
+    arrivalDate: null,
     arrivalTime: '',
     message: '',
   })
@@ -49,70 +63,86 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
   const [submitError, setSubmitError] = useState('')
   const [emailSent, setEmailSent] = useState(true)
 
-  // Get excursion image
   const excursionImage =
     typeof excursion.image === 'object' && excursion.image?.url
       ? excursion.image.url
       : '/images/placeholder.jpg'
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target
+  const handleInputChange = (field: keyof FormData, value: string | number | Date | null) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'adults' || name === 'children' ? parseInt(value) || 0 : value,
-    }))
-
-    // Clear error for this field when user types
-    if (errors[name]) {
+    if (errors[field]) {
       setErrors((prev) => {
         const newErrors = { ...prev }
-        delete newErrors[name]
+        delete newErrors[field]
         return newErrors
       })
     }
   }
 
   const validateStep1 = () => {
-    const newErrors: Record<string, string> = {}
-
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = t('fullNameRequired')
+    try {
+      ClientBookingSchema.pick({
+        fullName: true,
+        email: true,
+        phone: true,
+      }).parse({
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+      })
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {}
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            newErrors[err.path[0] as string] = err.message
+          }
+        })
+        setErrors(newErrors)
+      }
+      return false
     }
-
-    if (!formData.email.trim()) {
-      newErrors.email = t('emailRequired')
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = t('emailInvalid')
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = t('phoneRequired')
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
 
   const validateStep2 = () => {
-    const newErrors: Record<string, string> = {}
+    try {
+      const dateString = formData.arrivalDate
+        ? formData.arrivalDate.toISOString().split('T')[0]
+        : ''
 
-    if (formData.adults < 1) {
-      newErrors.adults = t('adultsRequired')
+      ClientBookingSchema.pick({
+        adults: true,
+        children: true,
+        arrivalDate: true,
+        arrivalTime: true,
+        message: true,
+      }).parse({
+        adults: formData.adults,
+        children: formData.children,
+        arrivalDate: dateString,
+        arrivalTime: formData.arrivalTime,
+        message: formData.message,
+      })
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {}
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            const field = err.path[0] as string
+            if (field === 'arrivalDate' && !formData.arrivalDate) {
+              newErrors[field] = t('arrivalDateRequired')
+            } else {
+              newErrors[field] = err.message
+            }
+          }
+        })
+        setErrors(newErrors)
+      }
+      return false
     }
-
-    if (!formData.arrivalDate) {
-      newErrors.arrivalDate = t('arrivalDateRequired')
-    }
-
-    if (!formData.arrivalTime) {
-      newErrors.arrivalTime = t('arrivalTimeRequired')
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
 
   const handleNextStep = () => {
@@ -121,44 +151,29 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
     }
   }
 
-  const handlePrevStep = () => {
-    setStep(1)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const handleSubmit = async () => {
     if (!validateStep2()) return
 
     setIsSubmitting(true)
     setSubmitError('')
 
     try {
+      const submissionData = {
+        ...formData,
+        arrivalDate: formData.arrivalDate?.toISOString().split('T')[0] || '',
+        excursion: excursion.id,
+      }
+
       const response = await fetch('/api/bookings', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          excursion: excursion.id,
-          status: 'pending',
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submissionData),
       })
 
       const result = await response.json()
 
       if (!response.ok) {
-        // Handle specific error types
-        if (result.error?.type === 'VALIDATION_ERROR') {
-          setSubmitError('Please check your information and try again.')
-        } else if (result.error?.type === 'EXCURSION_NOT_FOUND') {
-          setSubmitError('This excursion is no longer available.')
-        } else if (result.error?.type === 'EXCURSION_INACTIVE') {
-          setSubmitError('This excursion is not currently available for booking.')
-        } else {
-          setSubmitError(result.error?.message || 'Failed to submit booking. Please try again.')
-        }
+        setSubmitError(result.error?.message || t('submitError'))
         return
       }
 
@@ -166,369 +181,335 @@ export default function BookingModal({ isOpen, onClose, excursion, onSuccess }: 
         setSubmitSuccess(true)
         setEmailSent(result.emailSent)
 
-        // Log email status for debugging
-        if (!result.emailSent) {
-          console.warn('Booking created but email failed:', result.emailError)
-        }
-
-        // Call onSuccess after a delay to show success message
         if (onSuccess) {
-          setTimeout(() => {
-            onSuccess()
-          }, 3000) // Give more time to read the success message
+          setTimeout(() => onSuccess(), 3000)
         }
       } else {
-        setSubmitError(result.error?.message || 'Failed to submit booking. Please try again.')
+        setSubmitError(result.error?.message || t('submitError'))
       }
     } catch (error) {
-      console.error('Error submitting booking:', error)
-      setSubmitError('Network error. Please check your connection and try again.')
+      console.error('Booking submission error:', error)
+      setSubmitError(t('submitError'))
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  // Generate time options (30 minute intervals)
-  const timeOptions = []
-  for (let hour = 0; hour < 24; hour++) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      const formattedHour = hour.toString().padStart(2, '0')
-      const formattedMinute = minute.toString().padStart(2, '0')
-      timeOptions.push(`${formattedHour}:${formattedMinute}`)
-    }
+  const formatDateForAPI = (date: Date | null): string => {
+    return date ? date.toISOString().split('T')[0] : ''
   }
 
-  const modalTitle = submitSuccess ? t('bookingSuccess') : `${t('bookTitle')} ${excursion.title}`
-
-  // Progress indicators
-  const renderProgressSteps = () => (
-    <div className="flex items-center justify-center mb-6">
-      <div
-        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-          step === 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
-        }`}
-      >
-        1
-      </div>
-      <div className={`h-1 w-12 ${step === 1 ? 'bg-gray-200' : 'bg-primary'}`}></div>
-      <div
-        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-          step === 2 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
-        }`}
-      >
-        2
-      </div>
-    </div>
-  )
+  const modalTitle = submitSuccess ? t('bookingSuccess') : t('title')
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={modalTitle} size="md">
       {submitSuccess ? (
         <BookingSuccess
           excursion={excursion}
-          bookingData={formData}
+          bookingData={{
+            ...formData,
+            arrivalDate: formatDateForAPI(formData.arrivalDate),
+          }}
           emailSent={emailSent}
           onClose={onClose}
         />
       ) : (
-        <div className="p-6">
-          {/* Excursion summary */}
-          <div className="flex items-center mb-6 p-3 bg-gray-50 rounded-lg">
-            <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
-              <Image src={excursionImage} alt={excursion.title} fill className="object-cover" />
-            </div>
-            <div className="ml-4">
-              <h4 className="font-medium text-gray-900">{excursion.title}</h4>
-              <div className="flex items-center mt-1">
-                <span className="text-sm text-gray-500">${excursion.price}</span>
-                <span className="mx-2 text-gray-300">•</span>
-                <span className="text-sm text-gray-500">{excursion.duration}</span>
+        <div className="max-h-[85vh] flex flex-col">
+          {/* Compact Header */}
+          <div className="flex-shrink-0 px-4 py-3 border-b border-gray-100">
+            <div className="flex items-center space-x-3">
+              <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                <Image src={excursionImage} alt={excursion.title} fill className="object-cover" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-gray-900 text-sm truncate">{excursion.title}</h4>
+                <div className="flex items-center text-xs text-gray-500">
+                  <span className="truncate">{excursion.location}</span>
+                  <span className="mx-1">•</span>
+                  <span className="font-semibold text-primary">${excursion.price}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {renderProgressSteps()}
+          {/* Progress */}
+          <div className="flex-shrink-0 px-4 py-3 bg-gray-50">
+            <div className="flex items-center justify-center">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
+                  step >= 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {step > 1 ? <Check size={16} /> : '1'}
+              </div>
+              <div className={`h-0.5 w-12 mx-2 ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`}></div>
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
+                  step >= 2 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                2
+              </div>
+            </div>
+          </div>
 
-          <form className="space-y-5">
-            {step === 1 ? (
-              <div className="space-y-5">
-                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4 flex items-center">
-                  <User size={18} className="mr-2 text-primary" />
-                  {t('personalInfo')}
-                </h3>
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            {step === 1 && (
+              <div className="space-y-4">
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2">
+                    <User size={18} className="text-primary" />
+                    {t('personalInfo')}
+                  </h3>
+                </div>
 
-                <div className="relative">
-                  <label
-                    htmlFor="fullName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    {t('fullName')} *
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User size={16} className="text-gray-400" />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('fullName')} *
+                    </label>
+                    <div className="relative">
+                      <User
+                        size={16}
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      />
+                      <input
+                        type="text"
+                        value={formData.fullName}
+                        onChange={(e) => handleInputChange('fullName', e.target.value)}
+                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg text-sm ${
+                          errors.fullName
+                            ? 'border-red-500 bg-red-50'
+                            : 'border-gray-300 focus:ring-primary focus:border-primary'
+                        }`}
+                        placeholder="John Doe"
+                      />
                     </div>
+                    {errors.fullName && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertTriangle size={12} />
+                        {errors.fullName}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('email')} *
+                    </label>
+                    <div className="relative">
+                      <Mail
+                        size={16}
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      />
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg text-sm ${
+                          errors.email
+                            ? 'border-red-500 bg-red-50'
+                            : 'border-gray-300 focus:ring-primary focus:border-primary'
+                        }`}
+                        placeholder="email@example.com"
+                      />
+                    </div>
+                    {errors.email && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertTriangle size={12} />
+                        {errors.email}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('phone')} *
+                    </label>
+                    <div className="relative">
+                      <Phone
+                        size={16}
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      />
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg text-sm ${
+                          errors.phone
+                            ? 'border-red-500 bg-red-50'
+                            : 'border-gray-300 focus:ring-primary focus:border-primary'
+                        }`}
+                        placeholder="+1 (123) 456-7890"
+                      />
+                    </div>
+                    {errors.phone && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertTriangle size={12} />
+                        {errors.phone}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="space-y-4">
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-center gap-2">
+                    <Users size={18} className="text-primary" />
+                    {t('bookingDetails')}
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('adults')} *
+                    </label>
                     <input
-                      type="text"
-                      id="fullName"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
-                        errors.fullName ? 'border-red-500' : 'border-gray-300'
-                      } focus:ring-primary focus:border-primary`}
-                      placeholder="John Doe"
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={formData.adults}
+                      onChange={(e) => handleInputChange('adults', parseInt(e.target.value) || 1)}
+                      className={`w-full px-3 py-2.5 border rounded-lg text-sm ${
+                        errors.adults ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {errors.adults && <p className="mt-1 text-xs text-red-600">{errors.adults}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('children')}
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      value={formData.children}
+                      onChange={(e) => handleInputChange('children', parseInt(e.target.value) || 0)}
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm"
                     />
                   </div>
-                  {errors.fullName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('arrivalDate')} *
+                  </label>
+                  <CalendarInput
+                    value={formData.arrivalDate}
+                    onChange={(date) => handleInputChange('arrivalDate', date)}
+                    locale={locale}
+                    placeholder={t('arrivalDateRequired')}
+                    error={errors.arrivalDate}
+                  />
+                  {errors.arrivalDate && (
+                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                      <AlertTriangle size={12} />
+                      {errors.arrivalDate}
+                    </p>
                   )}
                 </div>
 
-                <div className="relative">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('email')} *
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('arrivalTime')} *
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail size={16} className="text-gray-400" />
-                    </div>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
-                      } focus:ring-primary focus:border-primary`}
-                      placeholder="email@example.com"
-                    />
-                  </div>
-                  {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                  <TimePicker
+                    value={formData.arrivalTime}
+                    onChange={(time) => handleInputChange('arrivalTime', time)}
+                    locale={locale}
+                    placeholder={t('selectTime')}
+                  />
+                  {errors.arrivalTime && (
+                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                      <AlertTriangle size={12} />
+                      {errors.arrivalTime}
+                    </p>
+                  )}
                 </div>
 
-                <div className="relative">
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('phone')} *
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Phone size={16} className="text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
-                        errors.phone ? 'border-red-500' : 'border-gray-300'
-                      } focus:ring-primary focus:border-primary`}
-                      placeholder="+1 (123) 456-7890"
-                    />
-                  </div>
-                  {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
-                </div>
-
-                <div className="pt-4 mt-8">
-                  <button
-                    type="button"
-                    onClick={handleNextStep}
-                    className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-                  >
-                    {t('next')}
-                    <ArrowRight size={18} className="ml-2" />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-5">
-                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4 flex items-center">
-                  <Calendar size={18} className="mr-2 text-primary" />
-                  {t('bookingDetails')}
-                </h3>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="relative">
-                    <label
-                      htmlFor="adults"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t('adults')} *
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Users size={16} className="text-gray-400" />
-                      </div>
-                      <input
-                        type="number"
-                        id="adults"
-                        name="adults"
-                        min="1"
-                        value={formData.adults}
-                        onChange={handleChange}
-                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
-                          errors.adults ? 'border-red-500' : 'border-gray-300'
-                        } focus:ring-primary focus:border-primary`}
-                      />
-                    </div>
-                    {errors.adults && <p className="mt-1 text-sm text-red-600">{errors.adults}</p>}
-                  </div>
-
-                  <div className="relative">
-                    <label
-                      htmlFor="children"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t('children')}
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Users size={16} className="text-gray-400" />
-                      </div>
-                      <input
-                        type="number"
-                        id="children"
-                        name="children"
-                        min="0"
-                        value={formData.children}
-                        onChange={handleChange}
-                        className="w-full pl-10 pr-3 py-2.5 border rounded-lg border-gray-300 focus:ring-primary focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="relative">
-                    <label
-                      htmlFor="arrivalDate"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t('arrivalDate')} *
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar size={16} className="text-gray-400" />
-                      </div>
-                      <input
-                        type="date"
-                        id="arrivalDate"
-                        name="arrivalDate"
-                        value={formData.arrivalDate}
-                        onChange={handleChange}
-                        min={new Date().toISOString().split('T')[0]}
-                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg ${
-                          errors.arrivalDate ? 'border-red-500' : 'border-gray-300'
-                        } focus:ring-primary focus:border-primary`}
-                      />
-                    </div>
-                    {errors.arrivalDate && (
-                      <p className="mt-1 text-sm text-red-600">{errors.arrivalDate}</p>
-                    )}
-                  </div>
-
-                  <div className="relative">
-                    <label
-                      htmlFor="arrivalTime"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t('arrivalTime')} *
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Clock size={16} className="text-gray-400" />
-                      </div>
-                      <select
-                        id="arrivalTime"
-                        name="arrivalTime"
-                        value={formData.arrivalTime}
-                        onChange={handleChange}
-                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg appearance-none ${
-                          errors.arrivalTime ? 'border-red-500' : 'border-gray-300'
-                        } focus:ring-primary focus:border-primary`}
-                      >
-                        <option value="">{t('selectTime')}</option>
-                        {timeOptions.map((time) => (
-                          <option key={time} value={time}>
-                            {time}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                        <svg
-                          className="fill-current h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
-                      </div>
-                    </div>
-                    {errors.arrivalTime && (
-                      <p className="mt-1 text-sm text-red-600">{errors.arrivalTime}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t('additionalInfo')}
                   </label>
                   <div className="relative">
-                    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
-                      <MessageSquare size={16} className="text-gray-400" />
-                    </div>
+                    <MessageSquare size={16} className="absolute top-3 left-3 text-gray-400" />
                     <textarea
-                      id="message"
-                      name="message"
                       rows={3}
                       value={formData.message}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                      onChange={(e) => handleInputChange('message', e.target.value)}
+                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm resize-none"
                       placeholder={t('additionalInfoPlaceholder')}
-                    ></textarea>
+                      maxLength={1000}
+                    />
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500 text-right">
+                    {(formData.message || '').length}/1000
                   </div>
                 </div>
 
                 {submitError && (
-                  <div className="bg-red-50 p-4 rounded-lg text-red-700 text-sm">{submitError}</div>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2 text-red-800">
+                      <AlertTriangle size={14} />
+                      <span className="text-sm font-medium">Error</span>
+                    </div>
+                    <p className="text-red-700 text-xs mt-1">{submitError}</p>
+                  </div>
                 )}
-
-                <div className="pt-4 mt-4 grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={handlePrevStep}
-                    className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors"
-                  >
-                    <ArrowLeft size={18} className="mr-2" />
-                    {t('back')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className={`flex items-center justify-center bg-primary text-white font-medium py-3 px-4 rounded-lg transition-colors ${
-                      isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-dark'
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 size={18} className="animate-spin mr-2" />
-                        {t('submitting')}
-                      </>
-                    ) : (
-                      <>
-                        {t('submit')}
-                        <Check size={18} className="ml-2" />
-                      </>
-                    )}
-                  </button>
-                </div>
               </div>
             )}
-          </form>
+          </div>
+
+          {/* Actions */}
+          <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
+            {step === 1 ? (
+              <button
+                type="button"
+                onClick={handleNextStep}
+                className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
+                {t('next')}
+                <ArrowRight size={16} />
+              </button>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2.5 px-4 rounded-lg transition-colors"
+                >
+                  <ArrowLeft size={16} />
+                  {t('back')}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className={`flex items-center justify-center gap-2 bg-secondary text-white font-medium py-2.5 px-4 rounded-lg transition-colors ${
+                    isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-secondary-dark'
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      {t('submitting')}
+                    </>
+                  ) : (
+                    <>
+                      {t('submit')}
+                      <Check size={16} />
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </Modal>
