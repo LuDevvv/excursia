@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -16,17 +16,8 @@ import {
   Heart,
 } from 'lucide-react'
 
-interface FooterProps {
-  popularExcursions?: Array<{
-    id: string | number
-    title: string
-    slug?: string
-  }>
-}
-
-export default function Footer({ popularExcursions = [] }: FooterProps) {
+export default function Footer() {
   const t = useTranslations('footer')
-  const locale = useLocale()
 
   const socialLinks = [
     { icon: <Facebook size={18} />, href: '#', label: 'Facebook' },
@@ -69,22 +60,16 @@ export default function Footer({ popularExcursions = [] }: FooterProps) {
     <footer className="bg-slate-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 mb-12">
-          {/* About Section - Logo + Description */}
           <div>
-            <div className="mb-6">
+            <div className="mb-2">
               <Link href="/" className="inline-block">
-                {/* Logo de la empresa */}
                 <Image
-                  src="/images/logo.png"
+                  src="/images/logo-white.png"
                   alt="Excursia Logo"
-                  width={160}
-                  height={60}
-                  className="h-10 w-auto hover:opacity-80 transition-opacity duration-300"
+                  width={180}
+                  height={80}
+                  className="h-12 lg:h-14 w-auto hover:opacity-80 transition-opacity duration-300"
                 />
-                {/* 
-                  Fallback text si no tienes logo:
-                  <span className="text-2xl font-bold text-white">EXCURSIA</span>
-                */}
               </Link>
             </div>
 
