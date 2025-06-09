@@ -6,8 +6,9 @@ import { useState, useRef, useEffect } from 'react'
 import ExcursionCard from '@/components/ExcursionCard'
 import BookingModal from '@/components/modals/BookingModal'
 import ExcursionDetailsModal from '@/components/modals/ExcursionDetailsModal'
-import { ChevronLeft, ChevronRight, Compass, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Compass, Plus, MapPin } from 'lucide-react'
 import Link from 'next/link'
+import AnimatedSection from '../ui/AnimatedSection'
 
 interface ExcursionSectionProps {
   excursions: Excursion[]
@@ -99,106 +100,166 @@ export default function ExcursionSection({ excursions }: ExcursionSectionProps) 
   }
 
   return (
-    <div id="excursions" className="container mx-auto px-4 py-12">
-      <div className="mb-8 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('excursionsTitle')}</h2>
-        <p className="text-gray-600 max-w-3xl mx-auto">{t('excursionsSubtitle')}</p>
-      </div>
-
-      {/* Empty State */}
-      {excursions.length === 0 ? (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 md:p-12 text-center max-w-2xl mx-auto">
-          <div className="mb-6">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4">
-              <Compass className="w-10 h-10 text-primary" />
-            </div>
+    <section
+      id="excursions"
+      className="py-12 sm:py-16 lg:py-20 relative overflow-hidden bg-gradient-to-b from-gray-50 to-white"
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
+        {/* Header Section */}
+        <AnimatedSection
+          animation="slideUp"
+          delay={100}
+          className="text-center mb-12 sm:mb-16 lg:mb-20"
+        >
+          <div className="max-w-4xl mx-auto">
+            <p className="text-primary font-medium italic mb-3 text-sm sm:text-base flex items-center justify-center gap-2">
+              <MapPin className="h-4 w-4" />
+              {t('discoverParadise') || 'Discover Paradise'}
+            </p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 mb-4 sm:mb-6 leading-tight">
+              {t('excursionsTitle')}
+            </h2>
+            <div className="w-16 sm:w-20 lg:w-24 h-1 bg-primary mx-auto rounded-full mb-4 sm:mb-6" />
+            <p className="text-gray-600 text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
+              {t('excursionsSubtitle')}
+            </p>
           </div>
+        </AnimatedSection>
 
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">Ready to Start Your Adventure?</h3>
+        {/* Content Section */}
+        {excursions.length === 0 ? (
+          // Empty State
+          <AnimatedSection animation="scaleIn" delay={300} className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl sm:rounded-3xl p-8 sm:p-12 lg:p-16 text-center border border-blue-100">
+              <div className="mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-full shadow-lg mb-6 group hover:scale-105 transition-all duration-300">
+                  <Compass className="w-10 h-10 sm:w-12 sm:h-12 text-primary group-hover:rotate-12 transition-transform duration-300" />
+                </div>
+              </div>
 
-          <p className="text-gray-600 mb-8 leading-relaxed">
-            We&apos;re preparing amazing excursions for you. Our team is currently adding new
-            adventures to showcase the best of Dominican Republic. Check back soon for incredible
-            experiences!
-          </p>
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-4 sm:mb-6">
+                Ready to Start Your Adventure?
+              </h3>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/admin"
-              className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors font-medium"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add First Excursion
-            </Link>
+              <p className="text-gray-600 mb-8 sm:mb-10 leading-relaxed text-base sm:text-lg max-w-2xl mx-auto">
+                We&apos;re preparing amazing excursions for you. Our team is currently adding new
+                adventures to showcase the best of Dominican Republic. Check back soon for
+                incredible experiences!
+              </p>
 
-            <button
-              className="inline-flex items-center justify-center border-2 border-primary text-primary px-6 py-3 rounded-lg hover:bg-primary hover:text-white transition-colors font-medium"
-              onClick={() => window.location.reload()}
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                <AnimatedSection animation="slideLeft" delay={600}>
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-primary-dark transition-all duration-300 font-medium hover:scale-105 transform-gpu shadow-lg text-sm sm:text-base"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Add First Excursion
+                  </Link>
+                </AnimatedSection>
+
+                <AnimatedSection animation="slideRight" delay={700}>
+                  <button
+                    className="inline-flex items-center justify-center border-2 border-primary text-primary px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-primary hover:text-white transition-all duration-300 font-medium hover:scale-105 transform-gpu text-sm sm:text-base"
+                    onClick={() => window.location.reload()}
+                  >
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                    Refresh
+                  </button>
+                </AnimatedSection>
+              </div>
+
+              {/* Decorative elements */}
+              <div className="mt-8 sm:mt-12 flex justify-center space-x-2">
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                <div
+                  className="w-2 h-2 bg-secondary rounded-full animate-pulse"
+                  style={{ animationDelay: '200ms' }}
                 />
-              </svg>
-              Refresh
-            </button>
-          </div>
-
-          {/* Decorative elements */}
-          <div className="mt-8 flex justify-center space-x-2 opacity-40">
-            <div className="w-2 h-2 bg-primary rounded-full"></div>
-            <div className="w-2 h-2 bg-secondary rounded-full"></div>
-            <div className="w-2 h-2 bg-primary rounded-full"></div>
-          </div>
-        </div>
-      ) : (
-        // Excursions Grid
-        <div className="relative">
-          {/* Left Arrow */}
-          <button
-            onClick={scrollLeft}
-            className={`absolute top-1/2 left-0 md:-left-4 -translate-y-1/2 z-10 bg-white/90 rounded-full shadow-md p-2 flex items-center justify-center w-10 h-10 border border-gray-100 hover:bg-gray-50 transition-all duration-300 ${
-              canScrollLeft ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
-            }`}
-            aria-label="Scroll left"
-          >
-            <ChevronLeft size={24} className="text-gray-700" />
-          </button>
-
-          {/* Scrollable Container */}
-          <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto gap-4 md:gap-6 pb-6 no-scrollbar snap-x"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {excursions.map((excursion) => (
-              <div
-                key={excursion.id}
-                className="flex-none w-[85%] sm:w-[320px] md:w-[340px] snap-start"
-              >
-                <ExcursionCard
-                  excursion={excursion}
-                  onClick={() => handleExcursionClick(excursion)}
+                <div
+                  className="w-2 h-2 bg-primary rounded-full animate-pulse"
+                  style={{ animationDelay: '400ms' }}
                 />
               </div>
-            ))}
-          </div>
+            </div>
+          </AnimatedSection>
+        ) : (
+          // Excursions Grid
+          <div className="relative">
+            {/* Excursions Carousel */}
+            <AnimatedSection animation="fadeIn" delay={400} className="relative">
+              {/* Left Arrow - Solo mostrar si hay más de una excursión */}
+              {excursions.length > 1 && (
+                <button
+                  onClick={scrollLeft}
+                  className={`absolute top-1/2 left-0 md:-left-4 -translate-y-1/2 z-10 bg-white/95 backdrop-blur-sm rounded-full shadow-lg p-3 flex items-center justify-center w-12 h-12 border border-gray-200 hover:bg-white hover:shadow-xl transition-all duration-300 hover:scale-110 transform-gpu ${
+                    canScrollLeft
+                      ? 'opacity-100 visible translate-x-0'
+                      : 'opacity-0 invisible -translate-x-2'
+                  }`}
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft size={20} className="text-gray-700" />
+                </button>
+              )}
 
-          {/* Right Arrow */}
-          <button
-            onClick={scrollRight}
-            className={`absolute top-1/2 right-0 md:-right-4 -translate-y-1/2 z-10 bg-white/90 rounded-full shadow-md p-2 flex items-center justify-center w-10 h-10 border border-gray-100 hover:bg-gray-50 transition-all duration-300 ${
-              canScrollRight ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
-            }`}
-            aria-label="Scroll right"
-          >
-            <ChevronRight size={24} className="text-gray-700" />
-          </button>
-        </div>
-      )}
+              {/* Scrollable Container */}
+              <div
+                ref={scrollContainerRef}
+                className="flex overflow-x-auto gap-4 sm:gap-6 lg:gap-8 pb-6 no-scrollbar snap-x scroll-smooth"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {excursions.map((excursion, index) => (
+                  <div
+                    key={excursion.id}
+                    className="flex-none w-[280px] sm:w-[320px] lg:w-[360px] snap-start opacity-0 animate-[slideInFromRight_0.6s_ease-out_forwards] hover:-translate-y-2 transition-transform duration-300"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                    }}
+                  >
+                    <ExcursionCard
+                      excursion={excursion}
+                      onClick={() => handleExcursionClick(excursion)}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Right Arrow - Solo mostrar si hay más de una excursión */}
+              {excursions.length > 1 && (
+                <button
+                  onClick={scrollRight}
+                  className={`absolute top-1/2 right-0 md:-right-4 -translate-y-1/2 z-10 bg-white/95 backdrop-blur-sm rounded-full shadow-lg p-3 flex items-center justify-center w-12 h-12 border border-gray-200 hover:bg-white hover:shadow-xl transition-all duration-300 hover:scale-110 transform-gpu ${
+                    canScrollRight
+                      ? 'opacity-100 visible translate-x-0'
+                      : 'opacity-0 invisible translate-x-2'
+                  }`}
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight size={20} className="text-gray-700" />
+                </button>
+              )}
+            </AnimatedSection>
+          </div>
+        )}
+
+        {/* Background Decorations */}
+        <div className="absolute top-10 right-4 w-20 h-20 bg-primary/10 rounded-full -z-10" />
+        <div className="absolute bottom-10 left-4 w-32 h-32 bg-secondary/10 rounded-full -z-10" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-full -z-20" />
+      </div>
 
       {/* Modals */}
       {selectedExcursion && (
@@ -218,6 +279,6 @@ export default function ExcursionSection({ excursions }: ExcursionSectionProps) 
           />
         </>
       )}
-    </div>
+    </section>
   )
 }

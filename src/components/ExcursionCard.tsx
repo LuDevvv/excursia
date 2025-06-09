@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { Excursion } from '@/payload-types'
-import { Clock, MapPin, Languages, Car } from 'lucide-react'
+import { Clock, MapPin, Languages } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface ExcursionCardProps {
@@ -58,34 +58,6 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
     return null
   }
 
-  // Format pickup info with translations
-  const getPickupInfo = () => {
-    if (!excursion.pickup) return null
-
-    switch (excursion.pickup.included) {
-      case 'included':
-        return {
-          text: excursion.pickup.pickupNote || tExcursion('pickupIncluded'),
-          color: 'bg-green-100 text-green-800',
-          icon: '✅',
-        }
-      case 'extra-cost':
-        return {
-          text: excursion.pickup.pickupNote || tExcursion('pickupExtraCost'),
-          color: 'bg-yellow-100 text-yellow-800',
-          icon: '💰',
-        }
-      case 'meet-location':
-        return {
-          text: excursion.pickup.meetingPoint || tExcursion('pickupMeetLocation'),
-          color: 'bg-blue-100 text-blue-800',
-          icon: '📍',
-        }
-      default:
-        return null
-    }
-  }
-
   // Get short description
   const getShortDescription = () => {
     if (excursion.shortDescription) {
@@ -125,7 +97,6 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
   const imageAlt = getImageAlt()
   const languages = formatLanguages()
   const description = getShortDescription()
-  const pickupInfo = getPickupInfo()
 
   return (
     <div
@@ -182,28 +153,6 @@ export default function ExcursionCard({ excursion, onClick }: ExcursionCardProps
 
         {/* Description */}
         <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">{description}</p>
-
-        {/* Pickup Info */}
-        {pickupInfo && (
-          <div className="mb-4">
-            <span
-              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${pickupInfo.color}`}
-            >
-              <span className="mr-1">{pickupInfo.icon}</span>
-              {pickupInfo.text}
-            </span>
-          </div>
-        )}
-
-        {/* Features Row */}
-        {excursion.pickup?.included === 'included' && (
-          <div className="flex items-center mb-4 text-xs text-gray-500">
-            <div className="flex items-center">
-              <Car size={12} className="mr-1 text-green-600" />
-              <span>{tExcursion('pickup')}</span>
-            </div>
-          </div>
-        )}
 
         {/* Call to Action */}
         <div className="pt-3 border-t border-gray-100">
