@@ -80,11 +80,12 @@ export default function LanguageSelector({ isMobile = false }: LanguageSelectorP
     )
   }
 
+  // Desktop version - Simple white styling
   return (
     <div className="relative z-10" ref={dropdownRef}>
       <button
-        className={`flex items-center gap-1 text-gray-700 hover:bg-gray-100 transition-all duration-200 p-2 rounded ${
-          isOpen ? 'bg-gray-100' : ''
+        className={`flex items-center gap-1.5 text-gray-700 hover:bg-gray-50 transition-all duration-200 p-2 rounded-lg ${
+          isOpen ? 'bg-gray-50' : ''
         }`}
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
@@ -94,21 +95,21 @@ export default function LanguageSelector({ isMobile = false }: LanguageSelectorP
           <Image
             src="/images/flags/en.svg"
             alt="English"
-            width={24}
-            height={24}
-            className="w-6 h-6"
+            width={22}
+            height={22}
+            className="w-5.5 h-5.5"
           />
         ) : (
           <Image
             src="/images/flags/es.svg"
             alt="Español"
-            width={24}
-            height={24}
-            className="w-6 h-6"
+            width={22}
+            height={22}
+            className="w-5.5 h-5.5"
           />
         )}
         <ChevronDown
-          size={16}
+          size={14}
           className={`text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
@@ -116,45 +117,45 @@ export default function LanguageSelector({ isMobile = false }: LanguageSelectorP
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 5 }}
+            initial={{ opacity: 0, y: 4, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-7 w-32 bg-white rounded shadow-md py-1 border border-gray-100 z-50"
+            className="absolute right-0 mt-6 w-36 bg-white rounded-lg shadow-lg py-1 border border-gray-100 z-50"
           >
             <Link
               href={pathname}
               locale="en"
               className={`flex items-center w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-all duration-200 ${
-                locale === 'en' ? 'text-primary font-medium' : 'text-gray-700'
+                locale === 'en' ? 'text-primary font-medium bg-primary/5' : 'text-gray-700'
               }`}
               onClick={() => setIsOpen(false)}
             >
               <Image
                 src="/images/flags/en.svg"
                 alt="English"
-                width={20}
-                height={20}
-                className="w-5 h-5 mr-2"
+                width={18}
+                height={18}
+                className="w-4.5 h-4.5 mr-2.5"
               />
-              English
+              <span className="text-sm">English</span>
             </Link>
             <Link
               href={pathname}
               locale="es"
               className={`flex items-center w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-all duration-200 ${
-                locale === 'es' ? 'text-primary font-medium' : 'text-gray-700'
+                locale === 'es' ? 'text-primary font-medium bg-primary/5' : 'text-gray-700'
               }`}
               onClick={() => setIsOpen(false)}
             >
               <Image
                 src="/images/flags/es.svg"
                 alt="Español"
-                width={20}
-                height={20}
-                className="w-5 h-5 mr-2"
+                width={18}
+                height={18}
+                className="w-4.5 h-4.5 mr-2.5"
               />
-              Español
+              <span className="text-sm">Español</span>
             </Link>
           </motion.div>
         )}
