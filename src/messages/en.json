@@ -6,10 +6,10 @@
     "language": "Language"
   },
   "header": {
-    "title": "A Legend You Can Live",
+    "title": "AS YOU NEVER",
+    "highLightText": "KNEW IT",
     "subtitle": "Explore the beauty of Dominican Republic with our unforgettable excursions",
     "bookNow": "Book Now",
-    "country": "Dominican Republic",
     "rating": "5.0 Rating",
     "localExperts": "Local Experts",
     "happyTravelers": "10,000+ Happy Travelers",
@@ -19,6 +19,7 @@
     "discoverParadise": "Discover Paradise",
     "excursionsTitle": "Our Excursions",
     "excursionsSubtitle": "Choose from our selection of amazing excursions and create unforgettable memories in the most beautiful destinations of Dominican Republic",
+    "readyToStartAdventure": "Ready to Start Your Adventure?",
     "noExcursions": "No excursions found. Please check back later.",
     "viewAllExcursions": "View All Excursions",
     "whyChooseUs": "Why Choose Us",

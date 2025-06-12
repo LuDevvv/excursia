@@ -7,18 +7,16 @@ import { Excursion } from '@/payload-types'
 
 export async function POST(req: Request) {
   try {
-    // Get and validate booking data
+    // Validar datos
     const requestData = await req.json()
-
     const validationResult = BookingSchema.safeParse(requestData)
+
     if (!validationResult.success) {
-      console.error('❌ Booking validation failed:', validationResult.error.errors)
       return NextResponse.json(
         {
           success: false,
           error: {
-            message: 'Invalid booking data',
-            type: 'VALIDATION_ERROR',
+            message: 'Datos de reserva inválidos',
             details: validationResult.error.errors,
           },
         },
@@ -28,102 +26,65 @@ export async function POST(req: Request) {
 
     const bookingData = validationResult.data
 
-    // Initialize Payload to get excursion details
-    const payload = await getPayload({
-      config: configPromise,
-    })
-
-    // Get excursion details to validate it exists and is active
+    // Obtener excursión
+    const payload = await getPayload({ config: configPromise })
     let excursion: Excursion
+
     try {
       excursion = (await payload.findByID({
         collection: 'excursions',
         id: bookingData.excursion,
       })) as Excursion
-    } catch (excursionError) {
-      console.error('❌ Excursion not found:', excursionError)
+    } catch {
       return NextResponse.json(
         {
           success: false,
-          error: {
-            message: 'Excursion not found',
-            type: 'EXCURSION_NOT_FOUND',
-          },
+          error: { message: 'Excursión no encontrada' },
         },
         { status: 404 },
       )
     }
 
-    // Validate excursion is active
+    // Verificar que la excursión esté activa
     if (!excursion.active) {
       return NextResponse.json(
         {
           success: false,
-          error: {
-            message: 'This excursion is not currently available',
-            type: 'EXCURSION_INACTIVE',
-          },
+          error: { message: 'Esta excursión no está disponible actualmente' },
         },
         { status: 400 },
       )
     }
 
-    console.log('✅ Booking data validated successfully:', {
-      customer: bookingData.fullName,
-      email: bookingData.email,
-      excursion: excursion.title,
-      date: bookingData.arrivalDate,
-      time: bookingData.arrivalTime,
-    })
-
-    // Send confirmation emails
+    // Enviar email
     const emailResult = await bookingEmailService.sendBookingConfirmation(bookingData, excursion)
 
     if (!emailResult.success) {
-      console.warn('⚠️ Email sending failed:', emailResult.error)
-
-      // Return success anyway since the booking request is valid
-      // The user will be notified that emails might be delayed
+      console.warn('⚠️ Error enviando email:', emailResult.error)
       return NextResponse.json(
         {
-          success: true,
+          success: true, // Aún consideramos exitoso
           emailSent: false,
-          emailError: emailResult.error?.message,
-          message: 'Booking confirmed! Email confirmation may be delayed.',
+          message: 'Reserva confirmada. El email de confirmación puede llegar con retraso.',
         },
         { status: 200 },
       )
     }
 
-    console.log('✅ Emails sent successfully:', {
-      customerEmailId: emailResult.customerEmailId,
-      businessEmailId: emailResult.businessEmailId,
-    })
-
     return NextResponse.json(
       {
         success: true,
         emailSent: true,
-        message: 'Booking confirmed successfully!',
+        message: '¡Reserva confirmada exitosamente!',
       },
       { status: 200 },
     )
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    console.error('❌ Critical error in booking API:', {
-      message: errorMessage,
-      stack: error instanceof Error ? error.stack : undefined,
-      timestamp: new Date().toISOString(),
-    })
-
+    console.error('❌ Error crítico en booking API:', error)
     return NextResponse.json(
       {
         success: false,
-        error: {
-          message: 'Failed to process booking request',
-          type: 'INTERNAL_ERROR',
-          details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
-        },
+        error: { message: 'Error al procesar la reserva' },
       },
       { status: 500 },
     )

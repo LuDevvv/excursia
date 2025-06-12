@@ -6,8 +6,7 @@ import { useState, useRef, useEffect } from 'react'
 import ExcursionCard from '@/components/ExcursionCard'
 import BookingModal from '@/components/modals/BookingModal'
 import ExcursionDetailsModal from '@/components/modals/ExcursionDetailsModal'
-import { ChevronLeft, ChevronRight, Compass, Plus, MapPin } from 'lucide-react'
-import Link from 'next/link'
+import { ChevronLeft, ChevronRight, Compass, MapPin } from 'lucide-react'
 import AnimatedSection from '../ui/AnimatedSection'
 
 interface ExcursionSectionProps {
@@ -128,7 +127,6 @@ export default function ExcursionSection({ excursions }: ExcursionSectionProps) 
 
         {/* Content Section */}
         {excursions.length === 0 ? (
-          // Empty State
           <AnimatedSection animation="scaleIn" delay={300} className="max-w-4xl mx-auto">
             <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl sm:rounded-3xl p-8 sm:p-12 lg:p-16 text-center border border-blue-100">
               <div className="mb-8">
@@ -138,69 +136,18 @@ export default function ExcursionSection({ excursions }: ExcursionSectionProps) 
               </div>
 
               <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-4 sm:mb-6">
-                Ready to Start Your Adventure?
+                {t('readyToStartAdventure')}
               </h3>
 
               <p className="text-gray-600 mb-8 sm:mb-10 leading-relaxed text-base sm:text-lg max-w-2xl mx-auto">
-                We&apos;re preparing amazing excursions for you. Our team is currently adding new
-                adventures to showcase the best of Dominican Republic. Check back soon for
-                incredible experiences!
+                {t('noExcursions')}
               </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                <AnimatedSection animation="slideLeft" delay={600}>
-                  <Link
-                    href="/admin"
-                    className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-primary-dark transition-all duration-300 font-medium hover:scale-105 transform-gpu shadow-lg text-sm sm:text-base"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Add First Excursion
-                  </Link>
-                </AnimatedSection>
-
-                <AnimatedSection animation="slideRight" delay={700}>
-                  <button
-                    className="inline-flex items-center justify-center border-2 border-primary text-primary px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-primary hover:text-white transition-all duration-300 font-medium hover:scale-105 transform-gpu text-sm sm:text-base"
-                    onClick={() => window.location.reload()}
-                  >
-                    <svg
-                      className="w-5 h-5 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                    </svg>
-                    Refresh
-                  </button>
-                </AnimatedSection>
-              </div>
-
-              {/* Decorative elements */}
-              <div className="mt-8 sm:mt-12 flex justify-center space-x-2">
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                <div
-                  className="w-2 h-2 bg-secondary rounded-full animate-pulse"
-                  style={{ animationDelay: '200ms' }}
-                />
-                <div
-                  className="w-2 h-2 bg-primary rounded-full animate-pulse"
-                  style={{ animationDelay: '400ms' }}
-                />
-              </div>
             </div>
           </AnimatedSection>
         ) : (
-          // Excursions Grid
           <div className="relative">
             {/* Excursions Carousel */}
             <AnimatedSection animation="fadeIn" delay={400} className="relative">
-              {/* Left Arrow - Solo mostrar si hay más de una excursión */}
               {excursions.length > 1 && (
                 <button
                   onClick={scrollLeft}

@@ -1,0 +1,42 @@
+# === ESENCIALES PARA RAILWAY ===
+node_modules
+.next
+.env*
+.git
+
+# === DESARROLLO ===
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# === BUILD OUTPUTS ===
+out/
+build/
+dist/
+coverage/
+
+# === IDEs ===
+.vscode
+.idea
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+*.pem
+
+# === LOGS ===
+logs
+*.log
+
+# === TESTING ===
+coverage
+*.lcov
+.nyc_output
+
+# === MISC ===
+README.md
+.gitignore
+docker-compose*

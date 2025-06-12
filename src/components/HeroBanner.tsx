@@ -53,7 +53,7 @@ export default function HeroBanner({
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] sm:leading-tight">
               <span className="block mb-2 sm:mb-3">{t(titleKey)}</span>
               <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl bg-gradient-to-r from-secondary via-yellow-400 to-secondary bg-clip-text text-transparent font-extrabold">
-                {t('country')}
+                {t('highLightText')}
               </span>
             </h1>
           </AnimatedSection>

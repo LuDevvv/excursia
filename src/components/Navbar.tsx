@@ -125,7 +125,7 @@ export default function Navbar() {
                   />
                   <span
                     className={`absolute left-0 block w-5 h-0.5 bg-gray-600 transition-all duration-200 ${
-                      mobileMenuOpen ? 'top-2.5 -rotate-45' : 'top-4'
+                      mobileMenuOpen ? 'top-2.5 -rotate-45' : 'top-3.5'
                     }`}
                   />
                 </div>
