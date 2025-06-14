@@ -21,15 +21,6 @@ const nextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
-  reactStrictMode: true,
-  distDir: '.next',
-  async redirects() {
-    return []
-  },
-  webpack(config) {
-    return config
-  },
-  turbopack: true,
 }
 
 export default withNextIntl(withPayload(nextConfig, { devBundleServerPackages: false }))
